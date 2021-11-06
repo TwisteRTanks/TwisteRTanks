@@ -44,6 +44,7 @@ fn main() {
     //___________________ CREATING_TEXTURES_BEGIN ____________//
     let mut texture_manager = TextureManager::new();
     texture_manager.load(TextureIdentifiers::Tank, "resources/tank.png");
+    texture_manager.load(TextureIdentifiers::Turret, "resources/turret.png");
     //___________________ CREATING_TEXTURES_END ______________//
 
     //___________________ CREATING_FONTS_BEGIN _______________//
@@ -56,6 +57,12 @@ fn main() {
     PlayerTank
         .sprite
         .set_texture(&texture_manager.get(TextureIdentifiers::Tank), false);
+    PlayerTank
+        .tsprite
+        .set_texture(&texture_manager.get(TextureIdentifiers::Turret), false);
+
+    PlayerTank.sprite.set_origin((22f32, 40f32));
+    PlayerTank.tsprite.set_origin((13f32, 34f32));
     //___________________ CREATING_PLAYER_END ________________//
 
     //___________________ CREATING_MENU_BEGIN ________________//
@@ -101,12 +108,12 @@ fn main() {
 
         if sfml::window::Key::LEFT.is_pressed() {
             PlayerTank.sprite.rotate(-2f32);
-            //turret_sprite.rotate(-2f32);
+            PlayerTank.tsprite.rotate(-2f32);
             PlayerTank.angle -= 2f32
         }
         if sfml::window::Key::RIGHT.is_pressed() {
             PlayerTank.sprite.rotate(2f32);
-            //turret_sprite.rotate(2f32);
+            PlayerTank.tsprite.rotate(2f32);
             PlayerTank.angle += 2f32
         }
         if sfml::window::Key::UP.is_pressed() {
@@ -126,6 +133,7 @@ fn main() {
         
         PlayerTank.update_pos();
         window.draw_sprite(&PlayerTank.sprite, &states);
+        window.draw_sprite(&PlayerTank.tsprite, &states);
         menu.draw(&mut window);
         window.display();
     }
