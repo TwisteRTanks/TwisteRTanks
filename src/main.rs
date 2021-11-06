@@ -73,7 +73,6 @@ fn main() {
             ),
         ],
     };
-
     //___________________ CREATING_MENU_END __________________//
     'mainl: loop {
         menu.buttons[0].text.set_fill_color(Color::WHITE);
