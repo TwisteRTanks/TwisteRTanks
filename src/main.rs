@@ -98,6 +98,7 @@ fn main() {
         };
 
         //___________________ HANDLING_KEYBOARD_BEGIN __________//
+
         if sfml::window::Key::LEFT.is_pressed() {
             PlayerTank.sprite.rotate(-2f32);
             //turret_sprite.rotate(-2f32);
@@ -120,7 +121,9 @@ fn main() {
             //tx += speed * (angle * PI / 180.0).cos();
             //ty += speed * (angle * PI / 180.0).sin();
         }
+
         //___________________ HANDLING_KEYBOARD_END ____________//
+        
         PlayerTank.update_pos();
         window.draw_sprite(&PlayerTank.sprite, &states);
         menu.draw(&mut window);
