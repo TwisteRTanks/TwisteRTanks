@@ -75,11 +75,13 @@ fn main() {
     };
     //___________________ CREATING_MENU_END __________________//
     'mainl: loop {
+        
+        //Типо ресетим цвет кнопки (подлежит рефакторингу)
         menu.buttons[0].text.set_fill_color(Color::WHITE);
         menu.buttons[1].text.set_fill_color(Color::WHITE);
-        //window.draw_sprite(&PlayerTank.sprite, &states);
 
-        let mpos = window.mouse_position();
+        let mpos = window.mouse_position(); // Типо позиция мыши
+
         if menu.buttons[0]
             .text
             .global_bounds()
@@ -94,6 +96,33 @@ fn main() {
         {
             menu.buttons[1].text.set_fill_color(Color::MAGENTA);
         };
+
+        //___________________ HANDLING_KEYBOARD_BEGIN __________//
+        if sfml::window::Key::LEFT.is_pressed() {
+            PlayerTank.sprite.rotate(-2f32);
+            //turret_sprite.rotate(-2f32);
+            PlayerTank.angle -= 2f32
+        }
+        if sfml::window::Key::RIGHT.is_pressed() {
+            PlayerTank.sprite.rotate(2f32);
+            //turret_sprite.rotate(2f32);
+            PlayerTank.angle += 2f32
+        }
+        if sfml::window::Key::UP.is_pressed() {
+            PlayerTank.x -= PlayerTank.speed * (PlayerTank.angle * PI / 180.0).cos();
+            PlayerTank.y -= PlayerTank.speed * (PlayerTank.angle * PI / 180.0).sin();
+            //tx -= speed * (angle * PI / 180.0).cos();
+            //ty -= speed * (angle * PI / 180.0).sin();
+        }
+        if sfml::window::Key::DOWN.is_pressed() {
+            PlayerTank.x += PlayerTank.speed * (PlayerTank.angle * PI / 180.0).cos();
+            PlayerTank.y += PlayerTank.speed * (PlayerTank.angle * PI / 180.0).sin();
+            //tx += speed * (angle * PI / 180.0).cos();
+            //ty += speed * (angle * PI / 180.0).sin();
+        }
+        //___________________ HANDLING_KEYBOARD_END ____________//
+        PlayerTank.update_pos();
+        window.draw_sprite(&PlayerTank.sprite, &states);
         menu.draw(&mut window);
         window.display();
     }

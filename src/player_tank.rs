@@ -14,9 +14,12 @@ impl<'a> Tank<'a> {
         Self {
             x: 0.0,
             y: 0.0,
-            angle: 0.0,
+            angle: 90.0,
             sprite: Sprite::new(),
             speed: 10.0,
         }
+    }
+    pub fn update_pos(&mut self){
+        self.sprite.set_position((self.x, self.y));
     }
 }
