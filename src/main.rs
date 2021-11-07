@@ -84,6 +84,7 @@ fn main() {
         match *state_stack.top().unwrap() {
             StateType::Intro => {}
             StateType::Menu => {
+
                 //Типо ресетим цвет кнопки (подлежит рефакторингу)
                 menu.buttons[0].text.set_fill_color(Color::WHITE);
                 menu.buttons[1].text.set_fill_color(Color::WHITE);
@@ -95,6 +96,13 @@ fn main() {
                     .global_bounds()
                     .contains2(mpos.x as f32, mpos.y as f32)
                 {
+                    if mouse::Button::is_pressed(mouse::Button::LEFT){
+                        state_stack.pop();
+                        state_stack.push(StateType::Playing);
+                        println!("{:?}", state_stack);
+                        window.clear(Color::BLACK);
+                        continue;
+                    }
                     menu.buttons[0].text.set_fill_color(Color::MAGENTA);
                 };
                 if menu.buttons[1]
@@ -142,6 +150,9 @@ fn main() {
                         Event::KeyPressed {
                             code: Key::ESCAPE, ..
                         } => break 'mainl,
+                        Event::KeyPressed {
+                            code: Key::M, ..
+                        } => state_stack.push(StateType::Menu),
                         Event::Closed => break 'mainl,
                         _ => {
                             //println!("{:#?}", event)
@@ -153,8 +164,6 @@ fn main() {
                 PlayerTank.update_pos();
                 window.draw_sprite(&PlayerTank.sprite, &states);
                 window.draw_sprite(&PlayerTank.tsprite, &states);
-                menu.draw(&mut window);
-                window.display();
             }
             StateType::GameOver => {}
         }
@@ -166,12 +175,15 @@ fn main() {
                 Event::KeyPressed {
                     code: Key::ESCAPE, ..
                 } => break 'mainl,
+                Event::KeyPressed {
+                    code: Key::M, ..
+                } => state_stack.push(StateType::Menu),
                 Event::Closed => break 'mainl,
                 _ => {}
             }
         }
         //___________________ HANDLING_ESCAPE_CLOSE_END ________//
-
+        println!("{:?}", state_stack.top());
         window.display();
     }
 }
