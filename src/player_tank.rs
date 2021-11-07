@@ -13,8 +13,8 @@ pub struct Tank<'a> {
 impl<'a> Tank<'a> {
     pub fn new() -> Self {
         Self {
-            x: 0.0,
-            y: 0.0,
+            x: 500.0,
+            y: 350.0,
             angle: 90.0,
             sprite: Sprite::new(),
             tsprite: Sprite::new(),

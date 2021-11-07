@@ -128,7 +128,19 @@ fn main() {
             //tx += speed * (angle * PI / 180.0).cos();
             //ty += speed * (angle * PI / 180.0).sin();
         }
-
+        while let Some(event) = window.poll_event() {
+            match event {
+                Event::MouseWheelScrolled { delta: -1.0, .. } => PlayerTank.tsprite.rotate(-6f32),
+                Event::MouseWheelScrolled { delta: 1.0, .. } => PlayerTank.tsprite.rotate(6f32),
+                Event::KeyPressed {
+                    code: Key::ESCAPE, ..
+                } => break 'mainl,
+                Event::Closed => break 'mainl,
+                _ => {
+                    //println!("{:#?}", event)
+                }
+            }
+        }
         //___________________ HANDLING_KEYBOARD_END ____________//
         
         PlayerTank.update_pos();
