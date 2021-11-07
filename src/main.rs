@@ -25,10 +25,9 @@ const PI: f32 = std::f32::consts::PI;
 //___________________ INIT_GLOBAL_CONSTANTS_END __________//
 
 fn main() {
-    let t = Option::<i32>::None;
     //___________________ INIT_STATE_STACK_BEGIN _____________//
     let mut state_stack = StateStack::new();
-    state_stack.push(StateType::Playing);
+    state_stack.push(StateType::Menu);
     //___________________ INIT_STATE_STACK_END _______________//
 
     //___________________ CREATING_WINDOW_BEGIN ______________//
@@ -80,73 +79,99 @@ fn main() {
             ),
         ],
     };
-    //___________________ CREATING_MENU_END __________________//
+    //___________________ CREATING_MENU_END ____________________//
     'mainl: loop {
-        
-        //Типо ресетим цвет кнопки (подлежит рефакторингу)
-        menu.buttons[0].text.set_fill_color(Color::WHITE);
-        menu.buttons[1].text.set_fill_color(Color::WHITE);
+        match *state_stack.top().unwrap() {
+            StateType::Intro => {}
+            StateType::Menu => {
+                //Типо ресетим цвет кнопки (подлежит рефакторингу)
+                menu.buttons[0].text.set_fill_color(Color::WHITE);
+                menu.buttons[1].text.set_fill_color(Color::WHITE);
 
-        let mpos = window.mouse_position(); // Типо позиция мыши
+                let mpos = window.mouse_position(); // Типо позиция мыши
 
-        if menu.buttons[0]
-            .text
-            .global_bounds()
-            .contains2(mpos.x as f32, mpos.y as f32)
-        {
-            menu.buttons[0].text.set_fill_color(Color::MAGENTA);
-        };
-        if menu.buttons[1]
-            .text
-            .global_bounds()
-            .contains2(mpos.x as f32, mpos.y as f32)
-        {
-            menu.buttons[1].text.set_fill_color(Color::MAGENTA);
-        };
+                if menu.buttons[0]
+                    .text
+                    .global_bounds()
+                    .contains2(mpos.x as f32, mpos.y as f32)
+                {
+                    menu.buttons[0].text.set_fill_color(Color::MAGENTA);
+                };
+                if menu.buttons[1]
+                    .text
+                    .global_bounds()
+                    .contains2(mpos.x as f32, mpos.y as f32)
+                {
+                    if mouse::Button::is_pressed(mouse::Button::LEFT){
+                        break 'mainl;
+                    }
+                    menu.buttons[1].text.set_fill_color(Color::MAGENTA);
+                };
 
-        //___________________ HANDLING_KEYBOARD_BEGIN __________//
+                menu.draw(&mut window);
+            }
+            StateType::Playing => {
+                //___________________ HANDLING_KEYBOARD_BEGIN __________//
 
-        if sfml::window::Key::LEFT.is_pressed() {
-            PlayerTank.sprite.rotate(-2f32);
-            PlayerTank.tsprite.rotate(-2f32);
-            PlayerTank.angle -= 2f32
+                if sfml::window::Key::LEFT.is_pressed() {
+                    PlayerTank.sprite.rotate(-2f32);
+                    PlayerTank.tsprite.rotate(-2f32);
+                    PlayerTank.angle -= 2f32
+                }
+                if sfml::window::Key::RIGHT.is_pressed() {
+                    PlayerTank.sprite.rotate(2f32);
+                    PlayerTank.tsprite.rotate(2f32);
+                    PlayerTank.angle += 2f32
+                }
+                if sfml::window::Key::UP.is_pressed() {
+                    PlayerTank.x -= PlayerTank.speed * (PlayerTank.angle * PI / 180.0).cos();
+                    PlayerTank.y -= PlayerTank.speed * (PlayerTank.angle * PI / 180.0).sin();
+                }
+                if sfml::window::Key::DOWN.is_pressed() {
+                    PlayerTank.x += PlayerTank.speed * (PlayerTank.angle * PI / 180.0).cos();
+                    PlayerTank.y += PlayerTank.speed * (PlayerTank.angle * PI / 180.0).sin();
+                }
+                while let Some(event) = window.poll_event() {
+                    match event {
+                        Event::MouseWheelScrolled { delta: -1.0, .. } => {
+                            PlayerTank.tsprite.rotate(-6f32)
+                        }
+                        Event::MouseWheelScrolled { delta: 1.0, .. } => {
+                            PlayerTank.tsprite.rotate(6f32)
+                        }
+                        Event::KeyPressed {
+                            code: Key::ESCAPE, ..
+                        } => break 'mainl,
+                        Event::Closed => break 'mainl,
+                        _ => {
+                            //println!("{:#?}", event)
+                        }
+                    }
+                }
+                //___________________ HANDLING_KEYBOARD_END ____________//
+
+                PlayerTank.update_pos();
+                window.draw_sprite(&PlayerTank.sprite, &states);
+                window.draw_sprite(&PlayerTank.tsprite, &states);
+                menu.draw(&mut window);
+                window.display();
+            }
+            StateType::GameOver => {}
         }
-        if sfml::window::Key::RIGHT.is_pressed() {
-            PlayerTank.sprite.rotate(2f32);
-            PlayerTank.tsprite.rotate(2f32);
-            PlayerTank.angle += 2f32
-        }
-        if sfml::window::Key::UP.is_pressed() {
-            PlayerTank.x -= PlayerTank.speed * (PlayerTank.angle * PI / 180.0).cos();
-            PlayerTank.y -= PlayerTank.speed * (PlayerTank.angle * PI / 180.0).sin();
-            //tx -= speed * (angle * PI / 180.0).cos();
-            //ty -= speed * (angle * PI / 180.0).sin();
-        }
-        if sfml::window::Key::DOWN.is_pressed() {
-            PlayerTank.x += PlayerTank.speed * (PlayerTank.angle * PI / 180.0).cos();
-            PlayerTank.y += PlayerTank.speed * (PlayerTank.angle * PI / 180.0).sin();
-            //tx += speed * (angle * PI / 180.0).cos();
-            //ty += speed * (angle * PI / 180.0).sin();
-        }
+
+        //___________________ HANDLING_ESCAPE_CLOSE_BEGIN ______//
         while let Some(event) = window.poll_event() {
+
             match event {
-                Event::MouseWheelScrolled { delta: -1.0, .. } => PlayerTank.tsprite.rotate(-6f32),
-                Event::MouseWheelScrolled { delta: 1.0, .. } => PlayerTank.tsprite.rotate(6f32),
                 Event::KeyPressed {
                     code: Key::ESCAPE, ..
                 } => break 'mainl,
                 Event::Closed => break 'mainl,
-                _ => {
-                    //println!("{:#?}", event)
-                }
+                _ => {}
             }
         }
-        //___________________ HANDLING_KEYBOARD_END ____________//
-        
-        PlayerTank.update_pos();
-        window.draw_sprite(&PlayerTank.sprite, &states);
-        window.draw_sprite(&PlayerTank.tsprite, &states);
-        menu.draw(&mut window);
+        //___________________ HANDLING_ESCAPE_CLOSE_END ________//
+
         window.display();
     }
 }

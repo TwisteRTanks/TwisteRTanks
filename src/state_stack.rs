@@ -1,8 +1,9 @@
 #[derive(Debug)]
 //TODO: napisat normalny kod
 pub enum StateType {
-    Playing,
+    Intro,
     Menu,
+    Playing,
     GameOver
 }
 
