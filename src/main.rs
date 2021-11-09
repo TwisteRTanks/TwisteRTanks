@@ -2,14 +2,14 @@
 
 use sfml::{
     graphics::{
-        Color, Font, RenderStates, RenderTarget, RenderWindow, Sprite, Texture, Transformable,
+        Shape, Color, Font, RenderStates, RenderTarget, RenderWindow, Sprite, Texture, Transformable, RectangleShape
     },
     system::{Clock, Vector2, Vector2f},
     window::{mouse, ContextSettings, Event, Key, Style},
     SfBox,
 };
 
-use std::{borrow::Borrow, collections::HashMap};
+use std::{borrow::Borrow, collections::HashMap, io::Read};
 
 mod menu;
 use menu::*;
@@ -27,7 +27,7 @@ const PI: f32 = std::f32::consts::PI;
 fn main() {
     //___________________ INIT_STATE_STACK_BEGIN _____________//
     let mut state_stack = StateStack::new();
-    state_stack.push(StateType::Menu);
+    state_stack.push(StateType::Playing);
     //___________________ INIT_STATE_STACK_END _______________//
 
     //___________________ CREATING_WINDOW_BEGIN ______________//
@@ -79,12 +79,22 @@ fn main() {
             ),
         ],
     };
+
+    let mut rs = RectangleShape::new();
+    rs.set_size((1000f32, 700f32));
+    rs.set_position((0f32, 0f32));
+    rs.set_fill_color(Color::rgba(0, 0, 0, 100)); 
+
     //___________________ CREATING_MENU_END ____________________//
     'mainl: loop {
+
+        //window.clear(Color::BLACK);
         match *state_stack.top().unwrap() {
             StateType::Intro => {}
-            StateType::Menu => {
-
+            StateType::Pause => {
+                /*
+                
+                */
                 //Типо ресетим цвет кнопки (подлежит рефакторингу)
                 menu.buttons[0].text.set_fill_color(Color::WHITE);
                 menu.buttons[1].text.set_fill_color(Color::WHITE);
@@ -99,7 +109,7 @@ fn main() {
                     if mouse::Button::is_pressed(mouse::Button::LEFT){
                         state_stack.pop();
                         state_stack.push(StateType::Playing);
-                        println!("{:?}", state_stack);
+                        //println!("{:?}", state_stack);
                         window.clear(Color::BLACK);
                         continue;
                     }
@@ -115,7 +125,7 @@ fn main() {
                     }
                     menu.buttons[1].text.set_fill_color(Color::MAGENTA);
                 };
-
+                //window.draw_rectangle_shape(&rs, &states);
                 menu.draw(&mut window);
             }
             StateType::Playing => {
@@ -151,8 +161,11 @@ fn main() {
                             code: Key::ESCAPE, ..
                         } => break 'mainl,
                         Event::KeyPressed {
-                            code: Key::M, ..
-                        } => state_stack.push(StateType::Menu),
+                            code: Key::P, ..
+                        } => {
+                            state_stack.push(StateType::Pause);
+                            window.draw_rectangle_shape(&rs, &states);
+                        },
                         Event::Closed => break 'mainl,
                         _ => {
                             //println!("{:#?}", event)
@@ -168,7 +181,7 @@ fn main() {
             StateType::GameOver => {}
         }
 
-        //___________________ HANDLING_ESCAPE_CLOSE_BEGIN ______//
+        //___________________ HANDLING_ESCAPE_CLOSE_MENU_BEGIN ______//
         while let Some(event) = window.poll_event() {
 
             match event {
@@ -176,14 +189,19 @@ fn main() {
                     code: Key::ESCAPE, ..
                 } => break 'mainl,
                 Event::KeyPressed {
-                    code: Key::M, ..
-                } => state_stack.push(StateType::Menu),
+                    code: Key::P, ..
+                } => {
+                    state_stack.push(StateType::Pause);
+                    window.draw_rectangle_shape(&rs, &states);
+
+                },
                 Event::Closed => break 'mainl,
                 _ => {}
             }
         }
-        //___________________ HANDLING_ESCAPE_CLOSE_END ________//
-        println!("{:?}", state_stack.top());
+        //___________________ HANDLING_ESCAPE_CLOSE_MENU_END ________//
+        //println!("{:?}", state_stack.top());
+        
         window.display();
     }
 }
