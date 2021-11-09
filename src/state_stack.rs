@@ -4,6 +4,7 @@ pub enum StateType {
     Intro,
     Menu,
     Playing,
+    Pause,
     GameOver
 }
 
