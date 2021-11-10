@@ -19,7 +19,8 @@ mod player_tank;
 use player_tank::*;
 mod state_stack;
 use state_stack::{StateStack, StateType};
-
+mod map;
+use map::*;
 //___________________ INIT_GLOBAL_CONSTANTS_BEGIN ________//
 const PI: f32 = std::f32::consts::PI;
 //___________________ INIT_GLOBAL_CONSTANTS_END __________//
@@ -91,6 +92,7 @@ fn main() {
         //window.clear(Color::BLACK);
         match *state_stack.top().unwrap() {
             StateType::Intro => {}
+            StateType::Menu => {}
             StateType::Pause => {
                 /*
                 
@@ -127,6 +129,7 @@ fn main() {
                 };
                 //window.draw_rectangle_shape(&rs, &states);
                 menu.draw(&mut window);
+                
             }
             StateType::Playing => {
                 //___________________ HANDLING_KEYBOARD_BEGIN __________//
