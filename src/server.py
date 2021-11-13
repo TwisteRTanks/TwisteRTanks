@@ -7,6 +7,12 @@ client = []
 print('Start Server')
 while 1:
     data, addres = sock.recvfrom(1024)
+
+    if data.decode(
+
+
+    )
+
     print(f"{addres[0]}:{addres[1]} cords = {data}")
     if addres not in client:
         client.append(addres)
@@ -14,3 +20,4 @@ while 1:
         if clients == addres:
             continue
         sock.sendto(data, clients)
+

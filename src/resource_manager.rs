@@ -50,6 +50,7 @@ impl<I: Eq + Hash, R: Resource> ResourceManager<I, R> {
 pub enum TextureIdentifiers {
     Tank,
     Turret,
+    Ground
 }
 #[derive(PartialEq, Eq, Hash)]
 pub enum FontIdentifiers {
