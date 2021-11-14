@@ -39,9 +39,18 @@ impl<'a> Map<'a> {
         }
     }
 
+    pub fn render_all(&mut self, user_tank: &Tank, window: &mut RenderWindow, rs: &RenderStates){
+        for x in (0..1000).step_by(64) {
+            for y in (0..700).step_by(64) {
+                self.tile.sprite.set_position((x as f32, y as f32));
+                window.draw_sprite(&self.tile.sprite, rs);
+            }
+        }
+    }
+
     pub fn render(&mut self, user_tank: &Tank, window: &mut RenderWindow, rs: &RenderStates) {
 
-        for x in (-1000..1000).step_by(64) {
+        for x in (0..1000).step_by(64) {
             for y in (0..700).step_by(64) {
                 // not implemented yet
                 if (x > user_tank.x as i32 - 110 && x < user_tank.x as i32 + 110)

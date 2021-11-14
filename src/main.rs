@@ -104,6 +104,11 @@ fn main() {
     //___________________ CREATING_SHADOW_END __________________//
 
     //___________________ CREATING_MENU_END ____________________//
+
+    // Some Prelude
+    map.render_all(&PlayerTank, &mut window, &states);
+    // End 
+
     'mainl: loop {
 
         event_manager.update(&mut window);
@@ -127,7 +132,8 @@ fn main() {
                         state_stack.pop();
                         state_stack.push(StateType::Playing);
                         //println!("{:?}", state_stack);
-                        window.clear(Color::BLACK);
+                        //window.clear(Color::BLACK);
+                        map.render_all(&PlayerTank, &mut window, &states);
                         continue;
                     }
                     menu.buttons[0].text.set_fill_color(Color::MAGENTA);
