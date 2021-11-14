@@ -1,5 +1,7 @@
 extern crate sfml;
+
 use sfml::{graphics::RenderWindow, window::Event, *};
+use std::slice::Iter;
 
 pub struct EventDispatcher {
     // Original code by linux-admin
@@ -18,5 +20,13 @@ impl EventDispatcher {
 
     pub fn has_event(&self, event: &Event) -> bool {
         self.events.contains(event)
+    }
+
+    pub fn clear_events(&mut self) {
+        self.events.clear()
+    }
+
+    pub fn get_events(&self) -> Iter<Event> {
+        self.events.iter()
     }
 }
