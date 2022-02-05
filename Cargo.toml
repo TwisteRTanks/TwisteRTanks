@@ -8,3 +8,4 @@ edition = "2018"
 [dependencies]
 rand = "*"
 sfml = "0.16.0"
+glu-sys = "0.1.4"

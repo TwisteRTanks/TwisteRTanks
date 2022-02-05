@@ -6,6 +6,7 @@ version = 3
 name = "TwisteRTanks"
 version = "0.0.1"
 dependencies = [
+ "glu-sys",
  "rand",
  "sfml",
 ]
@@ -71,6 +72,15 @@ dependencies = [
  "cfg-if",
  "libc",
  "wasi",
+]
+
+[[package]]
+name = "glu-sys"
+version = "0.1.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b96e6aab9cc22fe28d706c0efb380f1825d660a27ccf9a26591fb327905cc3f3"
+dependencies = [
+ "libc",
 ]
 
 [[package]]

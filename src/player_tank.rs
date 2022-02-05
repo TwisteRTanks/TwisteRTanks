@@ -18,7 +18,7 @@ impl<'a> Tank<'a> {
             angle: 90.0,
             sprite: Sprite::new(),
             tsprite: Sprite::new(),
-            speed: 10.0,
+            speed: 20.0,
         }
     }
     pub fn update_pos(&mut self){

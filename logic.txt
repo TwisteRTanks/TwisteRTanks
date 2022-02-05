@@ -1,0 +1,23 @@
+UI:
+    Menu
+    Buttons
+    Text
+    Images
+
+Network:
+    BaseEvents
+    Core
+
+Events:
+    Keyboard 
+    Game
+
+Init:
+    инициализация всего
+
+MainLoop:
+    Хендлинг событий hid
+    Хендлинг событий окна
+    Хендлинг событий игры
+    Обновление состояний
+    Рендеринг

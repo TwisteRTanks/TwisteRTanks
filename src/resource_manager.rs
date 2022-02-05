@@ -45,12 +45,14 @@ impl<I: Eq + Hash, R: Resource> ResourceManager<I, R> {
         }
     }
 }
-
 #[derive(PartialEq, Eq, Hash)]
 pub enum TextureIdentifiers {
     Tank,
     Turret,
-    Ground
+    Ground,
+    Metal,
+    Ice,
+    ChessCage
 }
 #[derive(PartialEq, Eq, Hash)]
 pub enum FontIdentifiers {
@@ -59,3 +61,4 @@ pub enum FontIdentifiers {
 
 pub type TextureManager = ResourceManager<TextureIdentifiers, SfBox<Texture>>;
 pub type FontManager = ResourceManager<FontIdentifiers, SfBox<Font>>;
+

@@ -1,10 +1,9 @@
-extern crate sfml;
+//extern crate sfml;
 
-use sfml::{graphics::RenderWindow, window::Event, *};
+use sfml::{graphics::RenderWindow, window::Event, *};// 
 use std::slice::Iter;
 
 pub struct EventDispatcher {
-    // Original code by linux-admin
     events: Vec<Event>,
 }
 impl EventDispatcher {
@@ -23,7 +22,8 @@ impl EventDispatcher {
     }
 
     pub fn clear_events(&mut self) {
-        self.events.clear()
+        self.events.clear();
+        
     }
 
     pub fn get_events(&self) -> Iter<Event> {
