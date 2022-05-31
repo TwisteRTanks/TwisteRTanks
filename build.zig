@@ -12,23 +12,22 @@ pub fn build(b: *std.build.Builder) void {
     const mode = b.standardReleaseOptions();
 
     const exe = b.addExecutable("TwisteRTanks", "src/main.zig");
+    exe.linkLibC();
+    exe.addPackagePath("sfml", "sfml/src/sfml/sfml.zig");
+     
+    if (target.getOsTag() == .windows) {
+        exe.addLibPath("CSFML/lib/msvc/");
+        exe.addIncludeDir("CSFML/include/");
+    }
+    exe.linkSystemLibrary("csfml-graphics");
+    exe.linkSystemLibrary("csfml-system");
+    exe.linkSystemLibrary("csfml-window");
+    exe.linkSystemLibrary("csfml-audio");
+    exe.addIncludeDir("csfml/include/");
     exe.setTarget(target);
     exe.setBuildMode(mode);
     exe.install();
 
-    const run_cmd = exe.run();
-    run_cmd.step.dependOn(b.getInstallStep());
-    if (b.args) |args| {
-        run_cmd.addArgs(args);
-    }
-
-    const run_step = b.step("run", "Run the app");
-    run_step.dependOn(&run_cmd.step);
-
-    const exe_tests = b.addTest("src/main.zig");
-    exe_tests.setTarget(target);
-    exe_tests.setBuildMode(mode);
-
-    const test_step = b.step("test", "Run unit tests");
-    test_step.dependOn(&exe_tests.step);
+    const run_step = b.step("run", "Run the game");
+    run_step.dependOn(&exe.run().step);
 }
