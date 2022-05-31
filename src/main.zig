@@ -1,11 +1,16 @@
 const std = @import("std");
 
-pub fn main() anyerror!void {
-    // Note that info level log messages are by default printed only in Debug
-    // and ReleaseSafe build modes.
-    std.log.info("All your codebase are belong to us.", .{});
-}
+const sf = struct {
+    usingnamespace @import("sfml");
+    usingnamespace sf.graphics;
+    usingnamespace sf.window;
+    usingnamespace sf.system;
+};
 
-test "basic test" {
-    try std.testing.expectEqual(10, 3 + 7);
+pub fn main() !void {
+    var window = try sf.RenderWindow.createDefault(.{ .x = 200, .y = 200 }, "SFML works!");
+    errdefer window.destroy();
+    while (true){
+        window.display();
+    }
 }
