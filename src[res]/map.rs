@@ -35,8 +35,8 @@ pub struct Map<'a> {
 impl<'a> Map<'a> {
     pub fn new() -> Self {
         let mut tiles = Vec::<(TextureIdentifiers, i32, i32)>::new();
-        for x in (-1088*10..10000*10).step_by(64) {
-            for y in (-1088*10..10000*10).step_by(64) {
+        for x in (-1088*2..10000*2).step_by(64) {
+            for y in (-1088..10000).step_by(64) {
                 let num = rand::thread_rng().gen_range(0..4);
 
                 if num == 0 {
@@ -44,11 +44,9 @@ impl<'a> Map<'a> {
                 } else if num == 1 {
                     tiles.push((TextureIdentifiers::Ground, x, y))
                 } else if num == 2 {
-                    //tiles.push((TextureIdentifiers::Ice, x, y))
-                    tiles.push((TextureIdentifiers::Ground, x, y))
+                    tiles.push((TextureIdentifiers::Ice, x, y))
                 } else {
-                    //tiles.push((TextureIdentifiers::ChessCage, x, y))
-                    tiles.push((TextureIdentifiers::Ground, x, y))
+                    tiles.push((TextureIdentifiers::ChessCage, x, y))
                 }
             }
         }
@@ -73,7 +71,6 @@ impl<'a> Map<'a> {
         rs: &RenderStates,
         v: &View,
     ) {
-        //println!("{}", &self.tiles.len());
         self.tile.sprite.set_rotation(0.0);
         let center_of_view = v.center();
 
@@ -85,10 +82,9 @@ impl<'a> Map<'a> {
         let height = v.size().y;
 
         let visible_area = FloatRect::new(left - 64.0, top - 64.0, width + 64.0, height + 64.0);
-        let mut tt = 0;
+
         for spr in &self.tiles {
             if visible_area.contains2(spr.1 as f32, spr.2 as f32) {
-                tt+=1;
                 match spr.0 {
                     TextureIdentifiers::Metal => {
                         self.metal_tile
@@ -114,7 +110,6 @@ impl<'a> Map<'a> {
                     }
                     _ => {}
                 }
-                println!("tt:{}", tt);
             }
         }
     }

@@ -33,7 +33,7 @@ fn main() {
     socket.set_nonblocking(true).unwrap();
     //___________________ INIT_STATE_STACK_BEGIN _____________//
     let mut state_stack = StateStack::new();
-    state_stack.push(StateType::Menu);
+    state_stack.push(StateType::Playing);
     //___________________ INIT_STATE_STACK_END _______________//
 
     //___________________ CREATING_WINDOW_BEGIN ______________//
@@ -112,21 +112,6 @@ fn main() {
             ),
         ],
     };
-    
-    let mut main_menu = Menu {
-        buttons: vec![
-            Button::new(
-                (font_manager.get(FontIdentifiers::sansation)),
-                ButtonType::Play,
-                &Vector2f::new(450., 180.),
-            ),
-            Button::new(
-                font_manager.get(FontIdentifiers::sansation),
-                ButtonType::About,
-                &Vector2f::new(430., 180. + 80.),
-            ),
-        ],
-    };
 
     //___________________ CREATING_SHADOW_BEGIN ________________//
     let mut shadow = RectangleShape::new();
@@ -138,16 +123,17 @@ fn main() {
     //___________________ CREATING_MENU_END ____________________//
 
     let mut view = View::new(Vector2::new(500.0, 350.0), Vector2::new(1000.0, 700.0));
-    
+    let mut minimap = View::new(Vector2::new(500.0, 350.0), Vector2::new(1000.0, 700.0));
+    minimap.set_viewport(&FloatRect::new(0.75f32, 0.75f32, 0.25f32, 0.25f32));
     window.set_view(&view);
-    
+    window.set_view(&minimap);
     //println!("{:?}", PlayerTank.sprite.texture().unwrap().upd );
 
     // Some Prelude
 
     let top = FloatRect::new(-1920.0, -1920.0, 2920.0, 1.0);
 
-    
+    map.render_all(&PlayerTank, &mut window, &states, &view);
     let mut sec_player_sprite = Sprite::new();
     let mut sec_player_turret = Sprite::new();
 
@@ -166,54 +152,18 @@ fn main() {
 
         match *state_stack.top().unwrap() {
             StateType::Intro => {}
-            StateType::Menu => {
-                main_menu.buttons[0].text.set_fill_color(Color::WHITE);
-                main_menu.buttons[1].text.set_fill_color(Color::WHITE);
-
-                let mpos = window.mouse_position(); // Типо позиция мыши
-
-                if main_menu.buttons[0]
-                    .text
-                    .global_bounds()
-                    .contains2(mpos.x as f32, mpos.y as f32)
-                {
-                    if mouse::Button::is_pressed(mouse::Button::LEFT) {
-                        state_stack.pop();
-                        state_stack.push(StateType::Playing);
-                        //println!("{:?}", state_stack);
-                        //window.clear(Color::BLACK);
-                        //map.render_all(&PlayerTank, &mut window, &states, &view);
-                        continue;
-                    }
-                    main_menu.buttons[0].text.set_fill_color(Color::MAGENTA);
-                };
-                if main_menu.buttons[1]
-                    .text
-                    .global_bounds()
-                    .contains2(mpos.x as f32, mpos.y as f32)
-                {
-                    if mouse::Button::is_pressed(mouse::Button::LEFT) {
-                        
-                    }
-                    main_menu.buttons[1].text.set_fill_color(Color::MAGENTA);
-                };
-                //window.draw_rectangle_shape(&shadow, &states);
-                main_menu.draw(&mut window);
-            }
+            StateType::Menu => {}
             StateType::Pause => {
-                //Типо ресетим цвет кнопки (подлежит рефакторингу)
                 
                 menu.buttons[0].text.set_fill_color(Color::WHITE);
                 menu.buttons[1].text.set_fill_color(Color::WHITE);
-                let da = (&menu.buttons[0].x+&view.center().x-view.size().x / 2., &menu.buttons[0].y+&view.center().y-view.size().y / 2., );
-                menu.buttons[0].text.set_position(da);
-                //println!("{:?}", &view.center().x-view.size().x / 2. );
-                let mpos = window.mouse_position(); // Типо позиция мыши
+
+                let mpos = window.mouse_position(); 
 
                 if menu.buttons[0]
                     .text
                     .global_bounds()
-                    .contains2(mpos.x as f32 - menu.buttons[0].x as f32, mpos.y as f32 - menu.buttons[0].y as f32)
+                    .contains2(mpos.x as f32, mpos.y as f32)
                 {
                     if mouse::Button::is_pressed(mouse::Button::LEFT) {
                         state_stack.pop();
@@ -269,13 +219,13 @@ fn main() {
                 if sfml::window::Key::UP.is_pressed() && window.has_focus() {
                     PlayerTank.x -= PlayerTank.speed * (PlayerTank.angle * PI / 180.0).cos();
                     PlayerTank.y -= PlayerTank.speed * (PlayerTank.angle * PI / 180.0).sin();
-                    
+
                     let tmp_x = PlayerTank.speed * (PlayerTank.angle * PI / 180.0).cos();
                     let tmp_y = PlayerTank.speed * (PlayerTank.angle * PI / 180.0).sin();
 
                     let v_center_x = view.center().x;
                     let v_center_y = view.center().y;
-                    //println!("x: {} y: {} tmp_x: {} tmp_y: {} v_cent_x: {} v_cent_y: {}", PlayerTank.x, PlayerTank.y, tmp_x, tmp_y, v_center_x, v_center_y);
+
                     if (PlayerTank.x < v_center_x - 400.0)
                         || (PlayerTank.x > v_center_x + 400.0)
                         || (PlayerTank.y < v_center_y - 150.0)
@@ -312,7 +262,7 @@ fn main() {
                             PlayerTank.tsprite.rotate(6f32)
                         }
                         _ => {
-                            //println!("{:#?}", event)
+                            println!("{:#?}", event)
                         }
                     }
                 }
@@ -323,7 +273,7 @@ fn main() {
 
         //___________________ HANDLING_ESCAPE_CLOSE_MENU_BEGIN ______//
         let mut buf = event_manager.get_events(); // buffer of events
-
+        
         while let Some(event) = buf.next() {
             match event {
                 Event::KeyPressed {
@@ -338,47 +288,10 @@ fn main() {
             }
         }
         //___________________ HANDLING_ESCAPE_CLOSE_MENU_END ________//
-        /*
-        let start = Instant::now();
-        window.display();
-        let duration = start.elapsed().as_secs_f64();
-        */
+
         window.set_view(&view);
         event_manager.clear_events();
-        /* 
-        let mut packet = String::new();
-        packet.push_str(&(PlayerTank.x as i32).to_string());
-        packet.push_str(" ");
-        packet.push_str(&(PlayerTank.y as i32).to_string());
-        packet.push_str(" ");
-        packet.push_str(&(PlayerTank.sprite.rotation() as i32).to_string());
-        packet.push_str(" ");
-        packet.push_str(&(PlayerTank.tsprite.rotation() as i32).to_string());
 
-        socket.send_to(packet.as_bytes(), "192.168.1.58:9265"); //}
-
-        let mut a = [0u8; 20];
-
-        let r = socket.recv(&mut a);
-
-        //println!("{:?}", a);
-
-        let decoded = str::from_utf8(&a).unwrap();
-        let decoded = decoded.replace("\u{0}", "");
-        let mut iter = decoded.split_whitespace();
-        if decoded.len() != 0 {
-            let x = iter.next().unwrap().parse::<i32>().unwrap();
-            let y = iter.next().unwrap().parse::<i32>().unwrap();
-            let angle = iter.next().unwrap().parse::<i32>().unwrap();
-            let tangle = iter.next().unwrap().parse::<i32>().unwrap();
-            sec_player_sprite.set_position((x as f32, y as f32));
-            sec_player_turret.set_position((x as f32, y as f32));
-            sec_player_sprite.set_rotation(angle as f32);
-            sec_player_turret.set_rotation(tangle as f32);
-            window.draw_sprite(&sec_player_sprite, &states);
-            window.draw_sprite(&sec_player_turret, &states);
-        }  
-        */
 
         let start = Instant::now();
 
