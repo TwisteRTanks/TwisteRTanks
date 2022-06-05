@@ -1,6 +1,6 @@
 const sf = @import("sf");
 
-const Handler = struct {
+pub const Handler = struct {
     const Self = @This();
 
     window: *sf.RenderWindow,
@@ -11,10 +11,11 @@ const Handler = struct {
     pub fn update(self: *Self) void {
         while (self.window.pollEvent()) |event| {
             switch (event) {
-                .closed => window.close(),
+                .closed => self.window.close(),
                 .keyReleased => |kev| {
-                    if (kev.code == sf.keyboard.KeyCode.Space)
-                        pause = !pause;
+                    if (kev.code == sf.keyboard.KeyCode.Space){
+                        // pausing
+                    }
                 },
                 else => {},
             }
