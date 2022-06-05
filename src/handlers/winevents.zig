@@ -9,7 +9,7 @@ const Handler = struct {
         return Self{ .window = window };
     }
     pub fn update(self: *Self) void {
-        while (window.pollEvent()) |event| {
+        while (self.window.pollEvent()) |event| {
             switch (event) {
                 .closed => window.close(),
                 .keyReleased => |kev| {
