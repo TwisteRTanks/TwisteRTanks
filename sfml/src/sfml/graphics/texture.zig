@@ -53,9 +53,8 @@ pub const Texture = union(TextureType) {
         // TODO: is it possible to detect that comptime?
         if (self.* == ._ptr) {
             sf.c.sfTexture_destroy(self._ptr);
-        } else
-            std.debug.print("SFML Debug: Trying to destroy a const texture!", .{});
-        
+        } else std.debug.print("SFML Debug: Trying to destroy a const texture!", .{});
+
         self._ptr = undefined;
     }
 

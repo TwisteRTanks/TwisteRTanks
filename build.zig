@@ -14,7 +14,8 @@ pub fn build(b: *std.build.Builder) void {
     const exe = b.addExecutable("TwisteRTanks", "src/main.zig");
     exe.linkLibC();
     exe.addPackagePath("sfml", "sfml/src/sfml/sfml.zig");
-     
+    exe.addPackagePath("sf", "src/sf.zig");
+
     if (target.getOsTag() == .windows) {
         exe.addLibPath("CSFML/lib/msvc/");
         exe.addIncludeDir("CSFML/include/");

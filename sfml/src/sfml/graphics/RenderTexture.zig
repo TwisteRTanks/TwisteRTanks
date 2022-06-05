@@ -1,4 +1,4 @@
-//! Target for off-screen 2D rendering into a texture. 
+//! Target for off-screen 2D rendering into a texture.
 
 const sf = struct {
     pub usingnamespace @import("../sfml.zig");
