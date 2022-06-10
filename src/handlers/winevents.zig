@@ -8,12 +8,17 @@ pub const Handler = struct {
     pub fn create(window: *sf.RenderWindow) Self {
         return Self{ .window = window };
     }
+
+    pub fn register(event: sf.window.Event) void {
+        _ = event;
+    }
+
     pub fn update(self: *Self) void {
         while (self.window.pollEvent()) |event| {
             switch (event) {
                 .closed => self.window.close(),
                 .keyReleased => |kev| {
-                    if (kev.code == sf.keyboard.KeyCode.Space){
+                    if (kev.code == sf.keyboard.KeyCode.Space) {
                         // pausing
                     }
                 },
