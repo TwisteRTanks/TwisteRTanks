@@ -36,7 +36,7 @@ pub fn create() !Self {
         .turretSprite = turretSprite,
         .turretAngle = 90,
         .angle = 90,
-        .speed = 4,
+        .speed = 8,
 
     };
 }
