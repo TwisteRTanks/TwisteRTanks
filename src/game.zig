@@ -1,73 +1,52 @@
+const Self = @This();
+const print = @import("std").debug.print;
+const sf = @import("sf");
+const keyboard = sf.window.keyboard;
+
 const utils = @import("utils.zig");
 const Tank = @import("objects/tank.zig");
 const Map = @import("map.zig");
 const Button = @import("ui/button.zig").Button;
-// const Handler = @import("handlers/winevents.zig").Handler;
-const sf = @import("sf.zig");
-const keyboard = sf.window.keyboard;
-const print = @import("std").debug.print;
+const Menu = @import("ui/menu.zig");
 
-pub fn mainloop() !void {
+pub fn createGame() !Self {
     var window = try utils.create_window(1000, 700, "TwisteRTanks");
-    window.setFramerateLimit(60);
-    
     var map = Map.create();
-    try map.genMap();
-    try map.drawOnWindow(&window);
+    var master = try Tank.create();
+    var gameMenu = Menu.create();
 
-    var button = try Button.create(.{1, 1}, "hello");
-    _=button;
+    return Self {
+        .window = window,
+        .map = map,
+        .master = master,
+        .gameMenu = gameMenu,
+    };
 
-    print("NOTICE:\n", .{});
-    print("Use W/S keys for rotate turret and Left/Right for rotate tank\n", .{});
-    print("Up/Down for moving tank\n", .{});
+}
 
-    // var handler = Handler.create(&window);
-    var tank = try Tank.create();
+pub fn setup(self: *Self) !void {
+    self.window.setFramerateLimit(60);
+    try self.map.genMap();
+}
 
-    errdefer window.destroy();
-    defer tank.destroy();
+pub fn runMainLoop(self: *Self) !void {
 
-    while (window.isOpen()) {
-        // handler.update();
-        while (window.pollEvent()) |event| {
-            switch (event) {
-                .closed => window.close(),
-                .keyReleased => |kev| {
-                    if (kev.code == sf.keyboard.KeyCode.Space) {
-                        // pausing
-                    }
-                },
-                else => {},
-            }
-        }
-
-        // ----------- Keyboard handling -----------
-        {
-            if (keyboard.isKeyPressed(keyboard.KeyCode.Down)) {
-                tank.gas(-1);
-            }
-            if (keyboard.isKeyPressed(keyboard.KeyCode.Up)) {
-                tank.gas(1);
-            }
-            if (keyboard.isKeyPressed(keyboard.KeyCode.Left)) {
-                tank.rotate(-1);
-            }
-            if (keyboard.isKeyPressed(keyboard.KeyCode.Right)) {
-                tank.rotate(1);
-            }
-            if (keyboard.isKeyPressed(keyboard.KeyCode.W)) {
-                tank.rotateTurret(1);
-            }
-            if (keyboard.isKeyPressed(keyboard.KeyCode.S)) {
-                tank.rotateTurret(-1);
-            }
-        }
-        // ----------- Keyboard handling -----------
-
+    while (self.window.isOpen()) {
+        
         window.clear(sf.Color.Black);
         try map.drawOnWindow(&window);
         tank.drawOnWindow(&window);
         window.display();
+    
     }
+
 }
+
+pub fn destroyGame() !void {
+
+}
+
+window: sf.RenderWindow,
+gameMenu: Menu,
+master: Tank,
+map: Map
