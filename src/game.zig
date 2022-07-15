@@ -14,7 +14,7 @@ pub fn createGame() !Self {
     var map = Map.create();
     var master = try Tank.create();
     var gameMenu = Menu.create();
-
+    
     return Self {
         .window = window,
         .map = map,
@@ -30,7 +30,7 @@ pub fn setup(self: *Self) !void {
 }
 
 pub fn runMainLoop(self: *Self) !void {
-
+    
     while (self.window.isOpen()) {
         
         window.clear(sf.Color.Black);

@@ -1,24 +1,20 @@
 const Self = @This();
 const std = @import("std");
 const print = @import("std").debug.print;
-const RndGen = std.rand.DefaultPrng;
-const randImpl = RndGen.init(@intCast(u64, std.time.milliTimestamp()));
 
 const sf = @import("sf");
 const Tile = @import("tile.zig");
 const range = @import("range.zig").range;
+const genNumInRange = @import("utils.zig").genRandNumInRange;
 
 pub fn destroy() void {
+
 }
 
 pub fn create() Self {    
     return Self {
         .tiles = undefined,
     };
-}
-
-pub fn genNumInRange(a: i32, b: i64) i32 { 
-    return randImpl.random().intRangeLessThan(i32, a, b);
 }
 
 pub fn genMap(self: *Self) !void {   

@@ -25,7 +25,7 @@ pub fn mainloop() !void {
     var tank = try Tank.create();
     errdefer window.destroy();
     defer tank.destroy();
-
+    
     while (window.isOpen()) {
         // handler.update();
         while (window.pollEvent()) |event| {
