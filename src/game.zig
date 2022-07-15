@@ -33,10 +33,10 @@ pub fn runMainLoop(self: *Self) !void {
     
     while (self.window.isOpen()) {
         
-        window.clear(sf.Color.Black);
-        try map.drawOnWindow(&window);
-        tank.drawOnWindow(&window);
-        window.display();
+        self.window.clear(sf.Color.Black);
+        try self.map.drawOnWindow(&self.window);
+        self.tank.drawOnWindow(&self.window);
+        self.window.display();
     
     }
 

@@ -1,4 +1,5 @@
 const std = @import("std");
+const Pkg = std.build.Pkg;
 
 pub fn build(b: *std.build.Builder) void {
     // Standard target options allows the person running `zig build` to choose
@@ -13,8 +14,13 @@ pub fn build(b: *std.build.Builder) void {
 
     const exe = b.addExecutable("TwisteRTanks", "src/main.zig");
     exe.linkLibC();
-    exe.addPackagePath("sfml", "sfml/src/sfml/sfml.zig");
-    exe.addPackagePath("sf", "src/sf.zig");
+
+    const pkg_sfml = Pkg{ .name = "sfml", .source = .{ .path = "sfml/src/sfml/sfml.zig" } };
+    const pkg_sf = Pkg{ .name = "sf", .source = .{ .path = "src/sf.zig" } };
+    exe.addPackage(pkg_sfml);
+    exe.addPackage(pkg_sf);
+    //exe.addPackagePath("sfml", "sfml/src/sfml/sfml.zig");
+    //exe.addPackagePath("sf", "src/sf.zig");
 
     if (target.getOsTag() == .windows) {
         exe.addLibPath("CSFML/lib/msvc/");

@@ -1,5 +1,5 @@
 const sf = @import("sf");
-const getRandNumInRan = @import("utils.zig").genRandNumInRange;
+const getRandNumInRan = @import("../utils.zig").genRandNumInRange;
 const math = @import("math");
 
 pub const Button = struct {
@@ -35,7 +35,7 @@ pub const Button = struct {
         
 
         return Self {
-            .id = genRandNumInRange(math.minInt(i32), math.maxInt(i32)),
+            .id = 0,//genRandNumInRange(math.minInt(i32), math.maxInt(i32)),
             .isPressed = false,
             .position = sf.Vector2f.new(pos[0], pos[1]),
             .text = text,

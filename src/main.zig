@@ -2,5 +2,5 @@ const std = @import("std");
 const game = @import("game.zig");
 
 pub fn main() !void {
-    _ = try game.mainloop();
+    _ = try game.runMainLoop();
 }
