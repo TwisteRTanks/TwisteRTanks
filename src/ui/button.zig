@@ -25,7 +25,9 @@ pub const Button = struct {
     }
 
     pub fn drawOnWindow(self: Self, window: *sf.RenderWindow) void {
-        //window.draw(self)
+        //window.draw(self);
+        _=self;
+        _=window;
     }
 
 };
