@@ -29,7 +29,7 @@ pub fn genMap(self: *Self) !void {
 
 pub fn drawOnWindow(self: Self, window: *sf.RenderWindow) !void {
     for (self.tiles) |tile| {
-        tile.drawOnWindow(window);
+        try tile.drawOnWindow(window);
     }
 }
 tiles: [176]Tile,

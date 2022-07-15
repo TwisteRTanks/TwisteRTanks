@@ -17,7 +17,7 @@ pub fn build(b: *std.build.Builder) void {
 
     const pkg_sfml = Pkg{ .name = "sfml", .source = .{ .path = "sfml/src/sfml/sfml.zig" } };
     exe.addPackage(pkg_sfml);
-    const pkg_sf = Pkg{ .name = "sf", .source = .{ .path = "src/sf.zig" } };
+    const pkg_sf = Pkg{ .name = "sf", .source = .{ .path = "src/sf.zig" }, .dependencies = &[_]Pkg{ pkg_sfml } };
     exe.addPackage(pkg_sf);
     //exe.addPackagePath("sfml", "sfml/src/sfml/sfml.zig");
     //exe.addPackagePath("sf", "src/sf.zig");

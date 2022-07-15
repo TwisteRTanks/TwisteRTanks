@@ -7,7 +7,7 @@ pub fn destroy(self: *Self) void {
 }
 
 pub fn create(x: f32, y: f32) !Self {
-    var texture = try sf.Texture.createFromFile("./resources/metal.png");
+    var texture = try sf.Texture.createFromFile("resources/metal.png");
     var sprite = try sf.Sprite.createFromTexture(texture);
     sprite.setPosition(sf.Vector2f.new(x, y));
     return Self {
@@ -17,7 +17,7 @@ pub fn create(x: f32, y: f32) !Self {
     };
 }
 
-pub fn drawOnWindow(self: Self, window: *sf.RenderWindow) void {
+pub fn drawOnWindow(self: Self, window: *sf.RenderWindow) !void {
     window.draw(self.sprite, null);
 }
 

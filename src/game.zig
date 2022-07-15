@@ -1,6 +1,6 @@
 const Self = @This();
 const print = @import("std").debug.print;
-const sf = @import("sf.zig");
+const sf = @import("sf");
 const keyboard = sf.window.keyboard;
 
 const utils = @import("utils.zig");
