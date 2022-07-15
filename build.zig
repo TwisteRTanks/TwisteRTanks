@@ -16,8 +16,8 @@ pub fn build(b: *std.build.Builder) void {
     exe.linkLibC();
 
     const pkg_sfml = Pkg{ .name = "sfml", .source = .{ .path = "sfml/src/sfml/sfml.zig" } };
-    const pkg_sf = Pkg{ .name = "sf", .source = .{ .path = "src/sf.zig" } };
     exe.addPackage(pkg_sfml);
+    const pkg_sf = Pkg{ .name = "sf", .source = .{ .path = "src/sf.zig" } };
     exe.addPackage(pkg_sf);
     //exe.addPackagePath("sfml", "sfml/src/sfml/sfml.zig");
     //exe.addPackagePath("sf", "src/sf.zig");

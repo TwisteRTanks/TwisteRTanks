@@ -1,6 +1,6 @@
 const Self = @This();
 const print = @import("std").debug.print;
-const sf = @import("sf");
+const sf = @import("sf.zig");
 const keyboard = sf.window.keyboard;
 
 const utils = @import("utils.zig");
@@ -13,7 +13,7 @@ pub fn createGame() !Self {
     var window = try utils.create_window(1000, 700, "TwisteRTanks");
     var map = Map.create();
     var master = try Tank.create();
-    var gameMenu = Menu.create();
+    var gameMenu = try Menu.create();
     
     return Self {
         .window = window,
@@ -35,7 +35,7 @@ pub fn runMainLoop(self: *Self) !void {
         
         self.window.clear(sf.Color.Black);
         try self.map.drawOnWindow(&self.window);
-        self.tank.drawOnWindow(&self.window);
+        self.master.drawOnWindow(&self.window);
         self.window.display();
     
     }
