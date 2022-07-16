@@ -5,6 +5,7 @@ const sf = struct {
     pub usingnamespace sf.system;
 };
 
+
 pub const Event = union(Event.Type) {
     const Self = @This();
 
@@ -21,16 +22,7 @@ pub const Event = union(Event.Type) {
         mouseButtonReleased,
         mouseMoved,
         mouseEntered,
-        mouseLeft,
-        joystickButtonPressed,
-        joystickButtonReleased,
-        joystickMoved,
-        joystickConnected,
-        joystickDisconnected,
-        touchBegan,
-        touchMoved,
-        touchEnded,
-        sensorChanged,
+        mouseLeft
     };
 
     // Big oof
@@ -50,15 +42,6 @@ pub const Event = union(Event.Type) {
             sf.c.sfEvtMouseMoved => .{ .mouseMoved = .{ .pos = .{ .x = event.mouseMove.x, .y = event.mouseMove.y } } },
             sf.c.sfEvtMouseEntered => .{ .mouseEntered = {} },
             sf.c.sfEvtMouseLeft => .{ .mouseLeft = {} },
-            sf.c.sfEvtJoystickButtonPressed => .{ .joystickButtonPressed = .{ .joystickId = event.joystickButton.joystickId, .button = event.joystickButton.button } },
-            sf.c.sfEvtJoystickButtonReleased => .{ .joystickButtonReleased = .{ .joystickId = event.joystickButton.joystickId, .button = event.joystickButton.button } },
-            sf.c.sfEvtJoystickMoved => .{ .joystickMoved = .{ .joystickId = event.joystickMove.joystickId, .axis = event.joystickMove.axis, .position = event.joystickMove.position } },
-            sf.c.sfEvtJoystickConnected => .{ .joystickConnected = .{ .joystickId = event.joystickConnect.joystickId } },
-            sf.c.sfEvtJoystickDisconnected => .{ .joystickDisconnected = .{ .joystickId = event.joystickConnect.joystickId } },
-            sf.c.sfEvtTouchBegan => .{ .touchBegan = .{ .finger = event.touch.finger, .pos = .{ .x = event.touch.x, .y = event.touch.y } } },
-            sf.c.sfEvtTouchMoved => .{ .touchMoved = .{ .finger = event.touch.finger, .pos = .{ .x = event.touch.x, .y = event.touch.y } } },
-            sf.c.sfEvtTouchEnded => .{ .touchEnded = .{ .finger = event.touch.finger, .pos = .{ .x = event.touch.x, .y = event.touch.y } } },
-            sf.c.sfEvtSensorChanged => .{ .sensorChanged = .{ .sensorType = event.sensor.sensorType, .vector = .{ .x = event.sensor.x, .y = event.sensor.y, .z = event.sensor.z } } },
             sf.c.sfEvtCount => @panic("sfEvtCount should't exist as an event!"),
             else => @panic("Unknown event!"),
         };
@@ -71,70 +54,151 @@ pub const Event = union(Event.Type) {
 
     /// Size events parameters
     pub const SizeEvent = struct {
+        const structId: i128 = 0;
+        const SELF = @This();
+
         size: sf.Vector2u,
+        
+        pub fn toInt(self: SELF) i128 {
+            var uid: i128 = undefined;
+
+            var cX = @intCast(i128, self.size.x);
+            var cY = @intCast(i128, self.size.y);
+
+            _=@addWithOverflow(i128, cX, structId, &uid);
+            _=@addWithOverflow(i128, cY, structId, &uid);
+
+            return uid;
+        }
     };
 
     /// Keyboard event parameters
     pub const KeyEvent = struct {
+        const structId: i128 = 1;
+        const SELF = @This();
+
         code: sf.window.keyboard.KeyCode,
         alt: bool,
         control: bool,
         shift: bool,
         system: bool,
+
+        pub fn toInt(self: SELF) i128 {
+            var uid: i128 = undefined;
+
+            var cS: i128 = @boolToInt(self.alt) + @boolToInt(self.control) + @boolToInt(self.shift) + @boolToInt(self.system);
+            var cE: i128 = @enumToInt(self.code)+594;
+
+            _=@addWithOverflow(i128, cS, structId, &uid);
+            _=@addWithOverflow(i128, cE, structId, &uid);
+
+            return uid;
+        }
+
     };
 
     /// Text event parameters
     pub const TextEvent = struct {
+        const structId: i128 = 2;
+        const SELF = @This();
         unicode: u32,
+
+        pub fn toInt(self: SELF) i128 {
+            var uid: i128 = undefined;
+
+            _=@addWithOverflow(i128, self.unicode*54, structId, &uid);
+
+            return uid;
+        }
     };
 
     /// Mouse move event parameters
     pub const MouseMoveEvent = struct {
+        const structId: i128 = 3;
+        const SELF = @This();
         pos: sf.Vector2i,
+
+        pub fn toInt(self: SELF) i128 {
+            var uid: i128 = undefined;
+
+            var cX = @intCast(i128, self.pos.x);
+            var cY = @intCast(i128, self.pos.y);
+
+            _=@addWithOverflow(i128, cX, 0, &uid);
+            _=@mulWithOverflow(i128, cY, uid, &uid);
+            _=@mulWithOverflow(i128, structId, uid, &uid);
+
+            return uid;
+        }
+
     };
 
     /// Mouse buttons events parameters
     pub const MouseButtonEvent = struct {
+        const structId: i128 = 4;
+        const SELF = @This();
+
         button: sf.window.mouse.Button,
         pos: sf.Vector2i,
+        
+        pub fn toInt(self: SELF) i128 {
+            var uid: i128 = undefined;
+
+            var cX = @intCast(i128, self.pos.x);
+            var cY = @intCast(i128, self.pos.y);
+            var cBut = @enumToInt(self.button)+425;
+            _=@addWithOverflow(i128, cX, structId, &uid);
+            _=@addWithOverflow(i128, cY, structId, &uid);
+            _=@addWithOverflow(i128, cBut, structId, &uid);
+
+            return uid;
+        }
     };
 
     /// Mouse wheel events parameters
     pub const MouseWheelScrollEvent = struct {
+        const SELF = @This();
+        const structId: i128 = 5;
+
         wheel: sf.window.mouse.Wheel,
-        delta: f32,
+        delta: f32, // f32
         pos: sf.Vector2i,
+
+        pub fn toInt(self: SELF) i128 {
+            var uid: i128 = undefined;
+
+            var cDelta = @floatToInt(i128, @round(self.delta * 853422465.53));
+            var cX = @intCast(i128, self.pos.x);
+            var cY = @intCast(i128, self.pos.y);
+            var cWheel: i128 = @intCast(i128, @enumToInt(self.wheel)+53); 
+
+            _=@addWithOverflow(i128, cDelta, structId, &uid);
+            _=@addWithOverflow(i128, cX, structId, &uid);
+            _=@addWithOverflow(i128, cY, structId, &uid);
+            _=@addWithOverflow(i128, cWheel, structId, &uid);
+
+            return uid;
+        }
+
     };
 
-    /// Joystick axis move event parameters
-    pub const JoystickMoveEvent = struct {
-        joystickId: c_uint,
-        axis: sf.c.sfJoystickAxis,
-        position: f32,
-    };
-
-    /// Joystick buttons events parameters
-    pub const JoystickButtonEvent = struct {
-        joystickId: c_uint,
-        button: c_uint,
-    };
-
-    /// Joystick connection/disconnection event parameters
-    pub const JoystickConnectEvent = struct {
-        joystickId: c_uint,
-    };
-
-    /// Touch events parameters
-    pub const TouchEvent = struct {
-        finger: c_uint,
-        pos: sf.Vector2i,
-    };
-
-    /// Sensor event parameters
-    pub const SensorEvent = struct {
-        sensorType: sf.c.sfSensorType,
-        vector: sf.Vector3f,
-    };
+    pub fn toInt(self: Self) i128 {
+        return switch (self) {
+            Event.closed => 550002,
+            Event.resized => self.resized.toInt(),
+            Event.lostFocus=> 550003,
+            Event.gainedFocus => 550004,
+            Event.textEntered => self.textEntered.toInt(),
+            Event.keyPressed => self.keyPressed.toInt(),
+            Event.keyReleased => self.keyReleased.toInt(),
+            Event.mouseButtonPressed => self.mouseButtonPressed.toInt(),
+            Event.mouseButtonReleased => self.mouseButtonReleased.toInt(),
+            Event.mouseMoved => self.mouseMoved.toInt(),
+            Event.mouseEntered => 550005,
+            Event.mouseLeft => 550006,
+            Event.mouseWheelScrolled => self.mouseWheelScrolled.toInt(),
+        };
+    }
 
     // An event is one of those
     closed: void,
@@ -150,13 +214,4 @@ pub const Event = union(Event.Type) {
     mouseMoved: MouseMoveEvent,
     mouseEntered: void,
     mouseLeft: void,
-    joystickButtonPressed: JoystickButtonEvent,
-    joystickButtonReleased: JoystickButtonEvent,
-    joystickMoved: JoystickMoveEvent,
-    joystickConnected: JoystickConnectEvent,
-    joystickDisconnected: JoystickConnectEvent,
-    touchBegan: TouchEvent,
-    touchMoved: TouchEvent,
-    touchEnded: TouchEvent,
-    sensorChanged: SensorEvent,
 };
