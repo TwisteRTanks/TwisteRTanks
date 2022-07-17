@@ -1,5 +1,3 @@
-//! Defines a system event and its parameters.
-
 const sf = struct {
     pub usingnamespace @import("../sfml.zig");
     pub usingnamespace sf.system;
@@ -54,7 +52,7 @@ pub const Event = union(Event.Type) {
 
     /// Size events parameters
     pub const SizeEvent = struct {
-        const structId: i128 = 0;
+        const structId: i128 = 333;
         const SELF = @This();
 
         size: sf.Vector2u,
@@ -74,7 +72,7 @@ pub const Event = union(Event.Type) {
 
     /// Keyboard event parameters
     pub const KeyEvent = struct {
-        const structId: i128 = 1;
+        const structId: i128 = 4444;
         const SELF = @This();
 
         code: sf.window.keyboard.KeyCode,
@@ -99,7 +97,7 @@ pub const Event = union(Event.Type) {
 
     /// Text event parameters
     pub const TextEvent = struct {
-        const structId: i128 = 2;
+        const structId: i128 = 55555;
         const SELF = @This();
         unicode: u32,
 
@@ -114,7 +112,7 @@ pub const Event = union(Event.Type) {
 
     /// Mouse move event parameters
     pub const MouseMoveEvent = struct {
-        const structId: i128 = 3;
+        const structId: i128 = 666666;
         const SELF = @This();
         pos: sf.Vector2i,
 
@@ -135,7 +133,7 @@ pub const Event = union(Event.Type) {
 
     /// Mouse buttons events parameters
     pub const MouseButtonEvent = struct {
-        const structId: i128 = 4;
+        const structId: i128 = 7777777;
         const SELF = @This();
 
         button: sf.window.mouse.Button,
@@ -158,7 +156,7 @@ pub const Event = union(Event.Type) {
     /// Mouse wheel events parameters
     pub const MouseWheelScrollEvent = struct {
         const SELF = @This();
-        const structId: i128 = 5;
+        const structId: i128 = 88888888;
 
         wheel: sf.window.mouse.Wheel,
         delta: f32, // f32

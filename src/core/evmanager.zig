@@ -9,7 +9,7 @@ const EventWrapper = @import("eventWrapper.zig").EventWrapper;
 const GameEvent = @import("gameEvent.zig").gameEvent;
 const HashMap = std.HashMap;
 // Callback function signature:
-// fn(*Game, Event) !void 
+// fn(*Game) !void 
 
 pub fn create(supplier: sf.RenderWindow) Self {
     return Self {
@@ -19,10 +19,15 @@ pub fn create(supplier: sf.RenderWindow) Self {
     };
 }
 
-pub fn update() void {}
+pub fn update(self: Self) void {
+    while (self.pollEvent()) |event| {
+        var callback = self.callbacksMap.get(event.toInt());    
+        _=callback;
+    }
+}
 
-pub fn registerCallback(self: *Self, callback: fn(*Game, EventWrapper) anyerror!void, event: EventWrapper) !void {
-    try self.callbacksMap.put(@enumToInt(event), @ptrToInt(&callback));
+pub fn registerCallback(self: *Self, callback: fn(*Game) anyerror!void, event: EventWrapper) !void {
+    try self.callbacksMap.put(event.toInt(), @ptrToInt(&callback));
 }
 
 pub fn putGameEvent(self: *Self, event: GameEvent) void {

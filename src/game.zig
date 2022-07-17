@@ -1,4 +1,5 @@
 const Self = @This();
+const std = @import("std");
 const print = @import("std").debug.print;
 const sf = @import("sf");
 const keyboard = sf.window.keyboard;
@@ -17,14 +18,6 @@ pub fn createGame() !Self {
     var master = try Tank.create();
     var gameMenu = try Menu.create();
 
-    var buttonev =  GameEvent{.buttonPressed = .{.id = 3}};
-    var buttonev2 = GameEvent{.buttonPressed = .{.id = 4}};
-    var sfev = sf.Event{.mouseWheelScrolled = .{.wheel=.Vertical, .delta = 0.7, .pos=.{.x=2, .y=5}}};
-    _=sfev;
-    print("{any}\n", .{buttonev.toInt()});
-    print("{any}", .{buttonev2.toInt()});
-    print("{any}", .{sfev.toInt()});
-    _=EventManager.create(window);
     return Self {
         .window = window,
         .map = map,
