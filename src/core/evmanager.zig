@@ -27,7 +27,7 @@ pub fn update(self: *Self) !void {
         if (callbackPtrAddres == null) { continue; }
         
         var callBackPtr: *fn(*Game) anyerror!void = @intToPtr(*(fn(*Game) anyerror!void), callbackPtrAddres.?);
-        self.source.window.close();
+        
         try (callBackPtr.*)(self.source);
         //std.debug.print("{any}", .{callBackPtr.*});
     }
