@@ -26,15 +26,14 @@ pub fn update(self: *Self) !void {
 
         if (callbackPtrAddres == null) { continue; }
         
-        var callBackPtr: *fn(*Game) anyerror!void = @intToPtr(*(fn(*Game) anyerror!void), callbackPtrAddres.?);
+        var callBackPtr: fn(*Game) anyerror!void = @intToPtr((fn(*Game) anyerror!void), callbackPtrAddres.?);
         
-        try (callBackPtr.*)(self.source);
-        //std.debug.print("{any}", .{callBackPtr.*});
+        try callBackPtr(self.source);
     }
 }
 
 pub fn registerCallback(self: *Self, callback: fn(*Game) anyerror!void, event: EventWrapper) !void {
-    try self.callbacksMap.put(try event.toStr(), @ptrToInt(&callback));
+    try self.callbacksMap.put(try event.toStr(), @ptrToInt(callback));
 }
 
 pub fn putGameEvent(self: *Self, event: GameEvent) void {
