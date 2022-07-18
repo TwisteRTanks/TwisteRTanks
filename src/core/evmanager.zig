@@ -11,40 +11,55 @@ const HashMap = std.HashMap;
 // Callback function signature:
 // fn(*Game) !void 
 
-pub fn create(supplier: sf.RenderWindow) Self {
+pub fn create(supplier: sf.RenderWindow, game: *Game) Self {
     return Self {
-        .callbacksMap = std.AutoHashMap(i128, usize).init(std.heap.page_allocator),
+        .callbacksMap = std.AutoHashMap([250]u8, usize).init(std.heap.page_allocator),
         .supplier = supplier,
-        .gameEventsBuffer = std.ArrayList(GameEvent).init(std.heap.page_allocator)
+        .gameEventsBuffer = std.ArrayList(GameEvent).init(std.heap.page_allocator),
+        .source = game
     };
 }
 
-pub fn update(self: Self) void {
+pub fn update(self: *Self) !void {
     while (self.pollEvent()) |event| {
-        var callback = self.callbacksMap.get(event.toInt());    
-        _=callback;
+        var callbackPtrAddres: ?usize = self.callbacksMap.get(try event.toStr());
+
+        if (callbackPtrAddres == null) { continue; }
+        
+        var callBackPtr: *fn(*Game) anyerror!void = @intToPtr(*(fn(*Game) anyerror!void), callbackPtrAddres.?);
+        self.source.window.close();
+        try (callBackPtr.*)(self.source);
+        //std.debug.print("{any}", .{callBackPtr.*});
     }
 }
 
 pub fn registerCallback(self: *Self, callback: fn(*Game) anyerror!void, event: EventWrapper) !void {
-    try self.callbacksMap.put(event.toInt(), @ptrToInt(&callback));
+    try self.callbacksMap.put(try event.toStr(), @ptrToInt(&callback));
 }
 
 pub fn putGameEvent(self: *Self, event: GameEvent) void {
     self.gameEventsBuffer.append(event);
 }
 
-pub fn pollEvent(self: *Self) EventWrapper {
-    var event: sf.Event = self.supplier.pollEvent();
+pub fn pollEvent(self: *Self) ?EventWrapper {
+    var event: ?sf.Event = self.supplier.pollEvent();
     
     if (event == null) {
-        var event_: sf.EventWrapper = self.evBuffer.pop();
-        return EventWrapper{.gameEvent=event_};
+        var event_: ?GameEvent = self.gameEventsBuffer.popOrNull();
+        
+        if (event_ == null) {
+            return null;
+        } else
+        
+        {
+            return EventWrapper{.gameEvent=event_.?};
+        }
     } else {
-        return EventWrapper{.sfmlEvent=event};
+        return EventWrapper{.sfmlEvent=event.?};
     }
 }
 
-callbacksMap: std.AutoHashMap(i128, usize),
+callbacksMap: std.AutoHashMap([250]u8, usize),
 supplier: sf.RenderWindow,
-gameEventsBuffer: std.ArrayList(GameEvent)
+gameEventsBuffer: std.ArrayList(GameEvent),
+source: *Game

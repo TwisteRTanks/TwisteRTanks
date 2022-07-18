@@ -3,6 +3,7 @@ const sf = struct {
     pub usingnamespace sf.system;
 };
 
+const std = @import("std");
 
 pub const Event = union(Event.Type) {
     const Self = @This();
@@ -57,6 +58,12 @@ pub const Event = union(Event.Type) {
 
         size: sf.Vector2u,
         
+        pub fn toStr(self: SELF) ![250]u8 {
+            var buf: [250]u8 = undefined;
+            _ = try std.fmt.bufPrint(&buf, "{s}", .{self});
+            return buf;
+        }
+
         pub fn toInt(self: SELF) i128 {
             var uid: i128 = undefined;
 
@@ -81,6 +88,12 @@ pub const Event = union(Event.Type) {
         shift: bool,
         system: bool,
 
+        pub fn toStr(self: SELF) ![250]u8 {
+            var buf: [250]u8 = undefined;
+            _ = try std.fmt.bufPrint(&buf, "{s}", .{self});
+            return buf;
+        }
+
         pub fn toInt(self: SELF) i128 {
             var uid: i128 = undefined;
 
@@ -101,6 +114,12 @@ pub const Event = union(Event.Type) {
         const SELF = @This();
         unicode: u32,
 
+        pub fn toStr(self: SELF) ![250]u8 {
+            var buf: [250]u8 = undefined;
+            _ = try std.fmt.bufPrint(buf, "{s}", .{self});
+            return buf;
+        }
+
         pub fn toInt(self: SELF) i128 {
             var uid: i128 = undefined;
 
@@ -115,6 +134,13 @@ pub const Event = union(Event.Type) {
         const structId: i128 = 666666;
         const SELF = @This();
         pos: sf.Vector2i,
+
+        pub fn toStr(self: SELF) ![250]u8 {
+            var buf: [250]u8 = undefined;
+            //for (buf[0..250]) |*b| b.* = 32;
+            _ = try std.fmt.bufPrint(&buf, "{s}", .{self});
+            return buf;
+        }
 
         pub fn toInt(self: SELF) i128 {
             var uid: i128 = undefined;
@@ -139,6 +165,12 @@ pub const Event = union(Event.Type) {
         button: sf.window.mouse.Button,
         pos: sf.Vector2i,
         
+        pub fn toStr(self: SELF) ![250]u8 {
+            var buf: [250]u8 = undefined;
+            _ = try std.fmt.bufPrint(&buf, "{s}", .{self});
+            return buf;
+        }
+
         pub fn toInt(self: SELF) i128 {
             var uid: i128 = undefined;
 
@@ -162,9 +194,14 @@ pub const Event = union(Event.Type) {
         delta: f32, // f32
         pos: sf.Vector2i,
 
+        pub fn toStr(self: SELF) ![250]u8 {
+            var buf: [250]u8 = undefined;
+            _ = try std.fmt.bufPrint(&buf, "{s}", .{self});
+            return buf;
+        }
+
         pub fn toInt(self: SELF) i128 {
             var uid: i128 = undefined;
-
             var cDelta = @floatToInt(i128, @round(self.delta * 853422465.53));
             var cX = @intCast(i128, self.pos.x);
             var cY = @intCast(i128, self.pos.y);
@@ -195,6 +232,48 @@ pub const Event = union(Event.Type) {
             Event.mouseEntered => 550005,
             Event.mouseLeft => 550006,
             Event.mouseWheelScrolled => self.mouseWheelScrolled.toInt(),
+        };
+    }
+
+    pub fn toStr(self: Self) ![250]u8 {
+        return switch (self){
+            Event.closed => {
+                var array: [250]u8 = undefined;
+                std.mem.copy(u8, &array, ("Event.closed".*)[0..12]);
+                return array;
+            },
+            Event.resized => try self.resized.toStr(),
+            Event.lostFocus=> {
+                var array: [250]u8 = undefined;
+                std.mem.copy(u8, &array, ("Event.lostFocus".*)[0..15]);
+                return array;
+            },
+            Event.gainedFocus => {
+                var array: [250]u8 = undefined;
+                std.mem.copy(u8, &array, ("Event.gainedFocus".*)[0..17]);
+                return array;
+            },
+            Event.textEntered => {
+                var array: [250]u8 = undefined;
+                std.mem.copy(u8, &array, ("Event.textEntered".*)[0..17]);
+                return array;
+            },
+            Event.keyPressed => try self.keyPressed.toStr(),
+            Event.keyReleased => try self.keyReleased.toStr(),
+            Event.mouseButtonPressed => try self.mouseButtonPressed.toStr(),
+            Event.mouseButtonReleased => try self.mouseButtonReleased.toStr(),
+            Event.mouseMoved => try self.mouseMoved.toStr(),
+            Event.mouseEntered => {
+                var array: [250]u8 = undefined;
+                std.mem.copy(u8, &array, ("Event.mouseEntered".*)[0..18]);
+                return array;
+            },
+            Event.mouseLeft => {
+                var array: [250]u8 = undefined;
+                std.mem.copy(u8, &array, ("Event.mouseLeft".*)[0..15]);
+                return array;
+            },
+            Event.mouseWheelScrolled => try self.mouseWheelScrolled.toStr(),
         };
     }
 

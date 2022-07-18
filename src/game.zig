@@ -1,9 +1,10 @@
-const Self = @This();
+const Game = @This();
 const std = @import("std");
 const print = @import("std").debug.print;
 const sf = @import("sf");
 const keyboard = sf.window.keyboard;
 
+const EventWrapper = @import("core/eventWrapper.zig").EventWrapper;
 const utils = @import("utils.zig");
 const Tank = @import("objects/tank.zig");
 const Map = @import("map.zig");
@@ -12,34 +13,37 @@ const Menu = @import("ui/menu.zig");
 const EventManager = @import("core/evmanager.zig");
 const GameEvent = @import("core/gameEvent.zig").gameEvent;
 
-pub fn createGame() !Self {
+pub fn createGame() !Game {
     var window = try utils.create_window(1000, 700, "TwisteRTanks");
     var map = Map.create();
     var master = try Tank.create();
     var gameMenu = try Menu.create();
+    var eventManager: ?EventManager = null;
 
-    return Self {
+    return Game {
         .window = window,
         .map = map,
         .master = master,
         .gameMenu = gameMenu,
+        .cEventManager = eventManager,
     };
 
 }
 
-pub fn setup(self: *Self) !void {
-    self.window.setFramerateLimit(60);
-    try self.map.genMap();
+pub fn simpleCallback(game: *Game) anyerror!void {
+    game.window.close();
 }
 
-pub fn runMainLoop(self: *Self) !void {
+pub fn setup(game: *Game) !void {
+    game.window.setFramerateLimit(60);
+    try game.map.genMap();
+    game.cEventManager = EventManager.create(game.window, game);
+    try game.cEventManager.?.registerCallback(simpleCallback, EventWrapper{.sfmlEvent=sf.Event.closed});
+}
+
+pub fn runMainLoop(self: *Game) !void {
     while (self.window.isOpen()) {
-        while (self.window.pollEvent()) |event| {
-            print("{any}\n", .{event.toInt()});
-            if (event == .closed)
-                
-                self.window.close();
-        }
+        try self.cEventManager.?.update();
         self.window.clear(sf.Color.Black);
         try self.map.drawOnWindow(&self.window);
         self.master.drawOnWindow(&self.window);
@@ -56,4 +60,5 @@ pub fn destroyGame() !void {
 window: sf.RenderWindow,
 gameMenu: Menu,
 master: Tank,
-map: Map
+map: Map,
+cEventManager: ?EventManager

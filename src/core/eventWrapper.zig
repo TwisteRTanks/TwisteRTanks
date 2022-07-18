@@ -7,10 +7,10 @@ pub const EventWrapper = union(enum) {
     sfmlEvent: sf.Event,
     gameEvent: GameEvent,
 
-    pub fn toInt(self: EventWrapper) i128 {
+    pub fn toStr(self: EventWrapper) ![250]u8 {
         return switch (self) {
-            EventWrapper.sfmlEvent => self.sfmlEvent.toInt(),
-            EventWrapper.gameEvent => self.gameEvent.toInt()
+            EventWrapper.sfmlEvent => try self.sfmlEvent.toStr(),
+            EventWrapper.gameEvent => try self.gameEvent.toStr()
         };
     }
 
