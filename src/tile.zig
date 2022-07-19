@@ -17,7 +17,7 @@ pub fn create(x: f32, y: f32) !Self {
     };
 }
 
-pub fn drawOnWindow(self: Self, window: *sf.RenderWindow) !void {
+pub fn drawOnWindow(self: Self, window: *sf.RenderWindow) void {
     window.draw(self.sprite, null);
 }
 
