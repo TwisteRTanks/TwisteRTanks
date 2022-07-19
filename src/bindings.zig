@@ -1,6 +1,6 @@
 const Game = @import("game.zig");
 
-// Generic signature: fn(*Game) anyerror! void
+// Generic signature: fn(*Game) anyerror!void
 
 pub fn onCloseWindow(game: *Game) anyerror!void {
     game.window.close();
