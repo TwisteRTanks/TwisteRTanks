@@ -53,11 +53,11 @@ pub const Event = union(Event.Type) {
 
     /// Size events parameters
     pub const SizeEvent = struct {
-        const SELF = @This();
+        const This = @This();
 
         size: sf.Vector2u,
         
-        pub fn toStr(self: SELF) ![250]u8 {
+        pub fn toStr(self: This) ![250]u8 {
             var buf: [250]u8 = undefined;
             _ = try std.fmt.bufPrint(&buf, "{s}", .{self});
             return buf;
@@ -66,7 +66,7 @@ pub const Event = union(Event.Type) {
 
     /// Keyboard event parameters
     pub const KeyEvent = struct {
-        const SELF = @This();
+        const This = @This();
 
         code: sf.window.keyboard.KeyCode,
         alt: bool,
@@ -74,7 +74,7 @@ pub const Event = union(Event.Type) {
         shift: bool,
         system: bool,
 
-        pub fn toStr(self: SELF) ![250]u8 {
+        pub fn toStr(self: This) ![250]u8 {
             var buf: [250]u8 = undefined;
             _ = try std.fmt.bufPrint(&buf, "{s}", .{self});
             return buf;
@@ -83,10 +83,10 @@ pub const Event = union(Event.Type) {
 
     /// Text event parameters
     pub const TextEvent = struct {
-        const SELF = @This();
+        const This = @This();
         unicode: u32,
 
-        pub fn toStr(self: SELF) ![250]u8 {
+        pub fn toStr(self: This) ![250]u8 {
             var buf: [250]u8 = undefined;
             _ = try std.fmt.bufPrint(buf, "{s}", .{self});
             return buf;
@@ -95,10 +95,10 @@ pub const Event = union(Event.Type) {
 
     /// Mouse move event parameters
     pub const MouseMoveEvent = struct {
-        const SELF = @This();
+        const This = @This();
         pos: sf.Vector2i,
 
-        pub fn toStr(self: SELF) ![250]u8 {
+        pub fn toStr(self: This) ![250]u8 {
             var buf: [250]u8 = undefined;
             //for (buf[0..250]) |*b| b.* = 32;
             _ = try std.fmt.bufPrint(&buf, "{s}", .{self});
@@ -108,12 +108,12 @@ pub const Event = union(Event.Type) {
 
     /// Mouse buttons events parameters
     pub const MouseButtonEvent = struct {
-        const SELF = @This();
+        const This = @This();
 
         button: sf.window.mouse.Button,
         pos: sf.Vector2i,
         
-        pub fn toStr(self: SELF) ![250]u8 {
+        pub fn toStr(self: This) ![250]u8 {
             var buf: [250]u8 = undefined;
             _ = try std.fmt.bufPrint(&buf, "{s}", .{self});
             return buf;
@@ -122,13 +122,13 @@ pub const Event = union(Event.Type) {
 
     /// Mouse wheel events parameters
     pub const MouseWheelScrollEvent = struct {
-        const SELF = @This();
+        const This = @This();
 
         wheel: sf.window.mouse.Wheel,
         delta: f32, // f32
         pos: sf.Vector2i,
 
-        pub fn toStr(self: SELF) ![250]u8 {
+        pub fn toStr(self: This) ![250]u8 {
             var buf: [250]u8 = undefined;
             _ = try std.fmt.bufPrint(&buf, "{s}", .{self});
             return buf;
