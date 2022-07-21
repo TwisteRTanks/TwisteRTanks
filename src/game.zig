@@ -15,7 +15,7 @@ const Menu = @import("ui/menu.zig");
 const EventManager = @import("core/evmanager.zig");
 const KeyboardManager = @import("core/kbmanager.zig");
 const GameEvent = @import("core/gameEvent.zig").gameEvent;
-const Bindings = @import("bindings.zig");
+const bindings = @import("bindings.zig");
 
 pub fn createGame() !Game {
     var window = try utils.create_window(1000, 700, "TwisteRTanks");
@@ -44,7 +44,7 @@ pub fn setup(self: *Game) !void {
     self.cEventManager = EventManager.create(self.window, self);
 
     try self.cEventManager.?.registerCallback(
-        onCloseWindow, 
+        bindings.onCloseWindow, 
         EventWrapper{ .sfmlEvent = sf.Event.closed }
     );
 
@@ -60,6 +60,8 @@ pub fn setup(self: *Game) !void {
 }
 
 pub fn runMainLoop(self: *Game) !void {
+
+    
     while (self.window.isOpen()) {
         
         try self.cEventManager.?.update();
