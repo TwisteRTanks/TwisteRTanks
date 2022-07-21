@@ -5,8 +5,6 @@ pub const gameEvent = union(enum) {
 
     pub const buttonEvent = struct {
         const Self = @This();
-        const structId: i128 = -1;
-
         id: i64,
 
         pub fn toStr(self: Self) ![250]u8 {
