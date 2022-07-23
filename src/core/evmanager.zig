@@ -1,4 +1,6 @@
 // Simple event manager
+// Zig version: 0.10.0-dev.2424+b3672e073 
+// Code by @<https://github.com/linux-admin0001>
 
 const Self = @This();
 const std = @import("std");
@@ -8,40 +10,42 @@ const Game = @import("../game.zig");
 const EventWrapper = @import("eventWrapper.zig").EventWrapper;
 const GameEvent = @import("gameEvent.zig").gameEvent;
 const HashMap = std.HashMap;
+
 // Callback function signature:
-// fn(*Game) !void 
+// fn(*Game, EventWrapper) !void 
 
 pub fn create(supplier: sf.RenderWindow, game: *Game) Self {
     return Self {
         .callbacksMap = std.AutoHashMap([250]u8, usize).init(std.heap.page_allocator),
         .supplier = supplier,
         .gameEventsBuffer = std.ArrayList(GameEvent).init(std.heap.page_allocator),
+        .allEventsBuffer = std.ArrayList(EventWrapper).init(std.heap.page_allocator),
         .source = game
     };
 }
 
 pub fn update(self: *Self) !void {
-    while (self.pollEvent()) |event| {
+    while (try self.pollEvent()) |event| {
         
         var callbackPtrAddres: ?usize = self.callbacksMap.get(try event.toStr());
 
         if (callbackPtrAddres == null) { continue; }
         
-        var callBackPtr: fn(*Game) anyerror!void = @intToPtr((fn(*Game) anyerror!void), callbackPtrAddres.?);
+        var callBackPtr: fn(*Game, EventWrapper) anyerror!void = @intToPtr((fn(*Game, EventWrapper) anyerror!void), callbackPtrAddres.?);
         
-        try callBackPtr(self.source);
+        try callBackPtr(self.source, event);
     }
 }
 
-pub fn registerCallback(self: *Self, callback: fn(*Game) anyerror!void, event: EventWrapper) !void {
+pub fn registerCallback(self: *Self, callback: fn(*Game, EventWrapper) anyerror!void, event: EventWrapper) !void {
     try self.callbacksMap.put(try event.toStr(), @ptrToInt(callback));
 }
 
-pub fn putGameEvent(self: *Self, event: GameEvent) void {
-    self.gameEventsBuffer.append(event);
+pub fn putGameEvent(self: *Self, event: GameEvent) !void {
+    try self.gameEventsBuffer.append(event);
 }
 
-pub fn pollEvent(self: *Self) ?EventWrapper {
+pub fn pollEvent(self: *Self) !?EventWrapper {
     var event: ?sf.Event = self.supplier.pollEvent();
     
     if (event == null) {
@@ -52,9 +56,11 @@ pub fn pollEvent(self: *Self) ?EventWrapper {
         } else
         
         {
+            try self.allEventsBuffer.append(EventWrapper{.gameEvent=event_.?});
             return EventWrapper{.gameEvent=event_.?};
         }
     } else {
+        try self.allEventsBuffer.append(EventWrapper{.sfmlEvent=event.?});
         return EventWrapper{.sfmlEvent=event.?};
     }
 }
@@ -62,4 +68,5 @@ pub fn pollEvent(self: *Self) ?EventWrapper {
 callbacksMap: std.AutoHashMap([250]u8, usize),
 supplier: sf.RenderWindow,
 gameEventsBuffer: std.ArrayList(GameEvent),
+allEventsBuffer: std.ArrayList(EventWrapper),
 source: *Game

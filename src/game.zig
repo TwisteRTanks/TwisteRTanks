@@ -31,7 +31,8 @@ pub fn createGame() !Game {
         .master = master, 
         .gameMenu = gameMenu, 
         .cEventManager = eventManager, 
-        .cKeyboardManager = keyboardManager
+        .cKeyboardManager = keyboardManager,
+        .buttons = std.ArrayList(Button).init(std.heap.page_allocator),
     };
 }
 
@@ -60,8 +61,9 @@ pub fn setup(self: *Game) !void {
 }
 
 pub fn runMainLoop(self: *Game) !void {
-    var b = try Button.create(.{100, 100}, "Test", &self.window);
-    
+    var b = try Button.create(.{100, 100}, "Test", &self.window, self.cEventManager.?);
+    try self.buttons.append(b);
+
     while (self.window.isOpen()) {
         b.update();
         try self.cEventManager.?.update();
@@ -70,7 +72,9 @@ pub fn runMainLoop(self: *Game) !void {
         self.window.clear(sf.Color.Black);
         self.map.drawOnWindow(&self.window);
         self.master.drawOnWindow(&self.window);
+
         b.drawOnWindow(&self.window);
+        
         self.window.display();
     }
 }
@@ -78,8 +82,12 @@ pub fn runMainLoop(self: *Game) !void {
 pub fn destroyGame() !void {}
 
 window: sf.RenderWindow,
-gameMenu: Menu,
 master: Tank,
 map: Map,
 cEventManager: ?EventManager,
-cKeyboardManager: ?KeyboardManager
+cKeyboardManager: ?KeyboardManager,
+// Gui elements:
+buttons: std.ArrayList(Button),
+gameMenu: Menu,
+//labels: ...
+//inputFiels: ...

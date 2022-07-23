@@ -1,6 +1,8 @@
 const sf = @import("sf");
 const genRandNumInRange = @import("../utils.zig").genRandNumInRange;
 const math = @import("std").math;
+const EventWrapper = @import("../core/eventWrapper.zig").EventWrapper;
+const EventManager = @import("../core/evmanager.zig");
 
 pub const Button = struct {
 
@@ -14,8 +16,9 @@ pub const Button = struct {
     text: sf.Text,
     body: sf.RectangleShape,
     supplier: *sf.RenderWindow,
+    eventManager: EventManager,
 
-    pub fn create(pos: [2]f32, tlabel: [:0]const u8, supplier: *sf.RenderWindow) !Self {
+    pub fn create(pos: [2]f32, tlabel: [:0]const u8, supplier: *sf.RenderWindow, evmanager: EventManager) !Self {
         var text = try sf.Text.createWithText(
                 tlabel, 
                 try sf.Font.createFromFile(
@@ -41,7 +44,8 @@ pub const Button = struct {
             .position = sf.Vector2f.new(pos[0], pos[1]),
             .text = text,
             .body = body,
-            .supplier = supplier
+            .supplier = supplier,
+            .eventManager = evmanager,
         };
     }
 
@@ -65,7 +69,5 @@ pub const Button = struct {
         window.draw(self.text, null);
     }
 
-    pub fn isClicled() bool {
-        return true;
-    }
 };
+

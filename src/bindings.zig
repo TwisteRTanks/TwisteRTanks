@@ -1,8 +1,11 @@
 const Game = @import("game.zig");
+const EventWrapper = @import("core/eventWrapper.zig").EventWrapper;
 
-// Generic signature: fn(*Game) anyerror!void
+// Generic signature: fn(*Game, EventWrapper) anyerror!void 
+// fn(*Game) anyerror!void for KeyboardManager 
 
-pub fn onCloseWindow(game: *Game) anyerror!void {
+pub fn onCloseWindow(game: *Game, event: EventWrapper) anyerror!void {
+    _=event;
     game.window.close();
 }
 
@@ -29,3 +32,7 @@ pub fn onWKeyPressed(game: *Game) anyerror!void {
 pub fn onSKeyPressed(game: *Game) anyerror!void {
     game.master.rotateTurret(-1);
 }
+
+//pub fn onMouseButtonLeftPressed(game: *Game, event: EventWrapper) anyerror!void {
+//    game.
+//}
