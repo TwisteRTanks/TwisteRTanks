@@ -69,5 +69,11 @@ pub const Button = struct {
         window.draw(self.text, null);
     }
 
-};
+    // This function doing anything
+    pub fn checkIsClicked(self: Self, event: EventWrapper) void {
+        _=self; _=event;
+        //std.debug.print("{s}", .{event});
+        return true;
+    }
 
+};

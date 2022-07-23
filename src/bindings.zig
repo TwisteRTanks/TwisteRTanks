@@ -33,6 +33,8 @@ pub fn onSKeyPressed(game: *Game) anyerror!void {
     game.master.rotateTurret(-1);
 }
 
-//pub fn onMouseButtonLeftPressed(game: *Game, event: EventWrapper) anyerror!void {
-//    game.
-//}
+pub fn onMouseButtonLeftPressed(game: *Game, event: EventWrapper) anyerror!void {
+    for (game.buttons) |button| {
+        button.checkIsClicked(event);
+    }
+}

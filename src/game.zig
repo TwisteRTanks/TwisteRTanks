@@ -49,6 +49,12 @@ pub fn setup(self: *Game) !void {
         EventWrapper{ .sfmlEvent = sf.Event.closed }
     );
 
+    try self.cEventManager.?.registerCallback(
+        bindings.onMouseButtonLeftPressed, 
+        EventWrapper{ .sfmlEvent = sf.Event{ .mouseMoved = sf.Event.MouseMoveEvent} }
+    );
+    
+
     // Creating and setuping keyboard manager //
     self.cKeyboardManager = KeyboardManager.create(self);
     // Todo: refactor this code
