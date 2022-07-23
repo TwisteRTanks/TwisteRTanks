@@ -17,6 +17,7 @@ const HashMap = std.HashMap;
 pub fn create(supplier: sf.RenderWindow, game: *Game) Self {
     return Self {
         .callbacksMap = std.AutoHashMap([250]u8, usize).init(std.heap.page_allocator),
+        .genericCallbacksMap = std.AutoHashMap(*const [:0]u8, std.ArrayList(usize)).init(std.heap.page_allocator),
         .supplier = supplier,
         .gameEventsBuffer = std.ArrayList(GameEvent).init(std.heap.page_allocator),
         .allEventsBuffer = std.ArrayList(EventWrapper).init(std.heap.page_allocator),
@@ -38,13 +39,18 @@ pub fn update(self: *Self) !void {
 }
 
 pub fn registerCallback(self: *Self, callback: fn(*Game, EventWrapper) anyerror!void, event: EventWrapper) !void {
-    std.debug.print("{s}", .{@typeName(event)});
     try self.callbacksMap.put(try event.toStr(), @ptrToInt(callback));
 }
 
 pub fn registerGenericCallback(self: *Self, callback: fn(*Game, EventWrapper) anyerror!void, event: EventWrapper) !void {
-    try self.callbacksMap.put(try event.toStr(), @ptrToInt(callback));
-
+    var bindingsArray: ?std.ArrayList(fn(*Game, EventWrapper) anyerror!void) = self.callbacksMap.get(@typeName(@TypeOf(event)));
+    if (bindingsArray == null) {
+        var newArrayList = std.ArrayList(usize).init();
+        newArrayList.append(@ptrToInt(callback));
+        try self.callbacksMap.put(@typeName(@TypeOf(event)), newArrayList);
+    } else {
+        bindingsArray.append(@ptrToInt(callback));
+    }
 }
 pub fn putGameEvent(self: *Self, event: GameEvent) !void {
     try self.gameEventsBuffer.append(event);
@@ -71,6 +77,9 @@ pub fn pollEvent(self: *Self) !?EventWrapper {
 }
 
 callbacksMap: std.AutoHashMap([250]u8, usize),
+// {"mouseButtonPressed": [binding1, binding2, ...]}
+// second argument (usize) is addres of *fn(*Game, EventWrapper) anyerror!void
+genericCallbacksMap: std.AutoHashMap(*const [:0]u8, std.ArrayList(usize)),
 supplier: sf.RenderWindow,
 gameEventsBuffer: std.ArrayList(GameEvent),
 allEventsBuffer: std.ArrayList(EventWrapper),
