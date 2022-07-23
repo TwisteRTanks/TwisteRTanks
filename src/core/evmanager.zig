@@ -38,9 +38,14 @@ pub fn update(self: *Self) !void {
 }
 
 pub fn registerCallback(self: *Self, callback: fn(*Game, EventWrapper) anyerror!void, event: EventWrapper) !void {
+    std.debug.print("{s}", .{@typeName(event)});
     try self.callbacksMap.put(try event.toStr(), @ptrToInt(callback));
 }
 
+pub fn registerGenericCallback(self: *Self, callback: fn(*Game, EventWrapper) anyerror!void, event: EventWrapper) !void {
+    try self.callbacksMap.put(try event.toStr(), @ptrToInt(callback));
+
+}
 pub fn putGameEvent(self: *Self, event: GameEvent) !void {
     try self.gameEventsBuffer.append(event);
 }

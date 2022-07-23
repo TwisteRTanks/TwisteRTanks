@@ -53,34 +53,20 @@ pub const Event = union(Event.Type) {
 
     /// Size events parameters
     pub const SizeEvent = struct {
-        const structId: i128 = 333;
-        const SELF = @This();
+        const This = @This();
 
         size: sf.Vector2u,
         
-        pub fn toStr(self: SELF) ![250]u8 {
+        pub fn toStr(self: This) ![250]u8 {
             var buf: [250]u8 = undefined;
             _ = try std.fmt.bufPrint(&buf, "{s}", .{self});
             return buf;
-        }
-
-        pub fn toInt(self: SELF) i128 {
-            var uid: i128 = undefined;
-
-            var cX = @intCast(i128, self.size.x);
-            var cY = @intCast(i128, self.size.y);
-
-            _=@addWithOverflow(i128, cX, structId, &uid);
-            _=@addWithOverflow(i128, cY, structId, &uid);
-
-            return uid;
         }
     };
 
     /// Keyboard event parameters
     pub const KeyEvent = struct {
-        const structId: i128 = 4444;
-        const SELF = @This();
+        const This = @This();
 
         code: sf.window.keyboard.KeyCode,
         alt: bool,
@@ -88,152 +74,66 @@ pub const Event = union(Event.Type) {
         shift: bool,
         system: bool,
 
-        pub fn toStr(self: SELF) ![250]u8 {
+        pub fn toStr(self: This) ![250]u8 {
             var buf: [250]u8 = undefined;
             _ = try std.fmt.bufPrint(&buf, "{s}", .{self});
             return buf;
         }
-
-        pub fn toInt(self: SELF) i128 {
-            var uid: i128 = undefined;
-
-            var cS: i128 = @boolToInt(self.alt) + @boolToInt(self.control) + @boolToInt(self.shift) + @boolToInt(self.system);
-            var cE: i128 = @enumToInt(self.code)+594;
-
-            _=@addWithOverflow(i128, cS, structId, &uid);
-            _=@addWithOverflow(i128, cE, structId, &uid);
-
-            return uid;
-        }
-
     };
 
     /// Text event parameters
     pub const TextEvent = struct {
-        const structId: i128 = 55555;
-        const SELF = @This();
+        const This = @This();
         unicode: u32,
 
-        pub fn toStr(self: SELF) ![250]u8 {
+        pub fn toStr(self: This) ![250]u8 {
             var buf: [250]u8 = undefined;
             _ = try std.fmt.bufPrint(buf, "{s}", .{self});
             return buf;
-        }
-
-        pub fn toInt(self: SELF) i128 {
-            var uid: i128 = undefined;
-
-            _=@addWithOverflow(i128, self.unicode*54, structId, &uid);
-
-            return uid;
         }
     };
 
     /// Mouse move event parameters
     pub const MouseMoveEvent = struct {
-        const structId: i128 = 666666;
-        const SELF = @This();
+        const This = @This();
         pos: sf.Vector2i,
 
-        pub fn toStr(self: SELF) ![250]u8 {
+        pub fn toStr(self: This) ![250]u8 {
             var buf: [250]u8 = undefined;
             //for (buf[0..250]) |*b| b.* = 32;
             _ = try std.fmt.bufPrint(&buf, "{s}", .{self});
             return buf;
         }
-
-        pub fn toInt(self: SELF) i128 {
-            var uid: i128 = undefined;
-
-            var cX = @intCast(i128, self.pos.x);
-            var cY = @intCast(i128, self.pos.y);
-
-            _=@addWithOverflow(i128, cX, 0, &uid);
-            _=@mulWithOverflow(i128, cY, uid, &uid);
-            _=@mulWithOverflow(i128, structId, uid, &uid);
-
-            return uid;
-        }
-
     };
 
     /// Mouse buttons events parameters
     pub const MouseButtonEvent = struct {
-        const structId: i128 = 7777777;
-        const SELF = @This();
+        const This = @This();
 
         button: sf.window.mouse.Button,
         pos: sf.Vector2i,
         
-        pub fn toStr(self: SELF) ![250]u8 {
+        pub fn toStr(self: This) ![250]u8 {
             var buf: [250]u8 = undefined;
             _ = try std.fmt.bufPrint(&buf, "{s}", .{self});
             return buf;
-        }
-
-        pub fn toInt(self: SELF) i128 {
-            var uid: i128 = undefined;
-
-            var cX = @intCast(i128, self.pos.x);
-            var cY = @intCast(i128, self.pos.y);
-            var cBut = @enumToInt(self.button)+425;
-            _=@addWithOverflow(i128, cX, structId, &uid);
-            _=@addWithOverflow(i128, cY, structId, &uid);
-            _=@addWithOverflow(i128, cBut, structId, &uid);
-
-            return uid;
         }
     };
 
     /// Mouse wheel events parameters
     pub const MouseWheelScrollEvent = struct {
-        const SELF = @This();
-        const structId: i128 = 88888888;
+        const This = @This();
 
         wheel: sf.window.mouse.Wheel,
         delta: f32, // f32
         pos: sf.Vector2i,
 
-        pub fn toStr(self: SELF) ![250]u8 {
+        pub fn toStr(self: This) ![250]u8 {
             var buf: [250]u8 = undefined;
             _ = try std.fmt.bufPrint(&buf, "{s}", .{self});
             return buf;
         }
-
-        pub fn toInt(self: SELF) i128 {
-            var uid: i128 = undefined;
-            var cDelta = @floatToInt(i128, @round(self.delta * 853422465.53));
-            var cX = @intCast(i128, self.pos.x);
-            var cY = @intCast(i128, self.pos.y);
-            var cWheel: i128 = @intCast(i128, @enumToInt(self.wheel)+53); 
-
-            _=@addWithOverflow(i128, cDelta, structId, &uid);
-            _=@addWithOverflow(i128, cX, structId, &uid);
-            _=@addWithOverflow(i128, cY, structId, &uid);
-            _=@addWithOverflow(i128, cWheel, structId, &uid);
-
-            return uid;
-        }
-
     };
-
-    pub fn toInt(self: Self) i128 {
-        return switch (self) {
-            Event.closed => 550002,
-            Event.resized => self.resized.toInt(),
-            Event.lostFocus=> 550003,
-            Event.gainedFocus => 550004,
-            Event.textEntered => self.textEntered.toInt(),
-            Event.keyPressed => self.keyPressed.toInt(),
-            Event.keyReleased => self.keyReleased.toInt(),
-            Event.mouseButtonPressed => self.mouseButtonPressed.toInt(),
-            Event.mouseButtonReleased => self.mouseButtonReleased.toInt(),
-            Event.mouseMoved => self.mouseMoved.toInt(),
-            Event.mouseEntered => 550005,
-            Event.mouseLeft => 550006,
-            Event.mouseWheelScrolled => self.mouseWheelScrolled.toInt(),
-        };
-    }
 
     pub fn toStr(self: Self) ![250]u8 {
         return switch (self){
