@@ -60,16 +60,17 @@ pub fn setup(self: *Game) !void {
 }
 
 pub fn runMainLoop(self: *Game) !void {
-
+    var b = try Button.create(.{100, 100}, "Test", &self.window);
     
     while (self.window.isOpen()) {
-        
+        b.update();
         try self.cEventManager.?.update();
         try self.cKeyboardManager.?.update();
 
         self.window.clear(sf.Color.Black);
         self.map.drawOnWindow(&self.window);
         self.master.drawOnWindow(&self.window);
+        b.drawOnWindow(&self.window);
         self.window.display();
     }
 }

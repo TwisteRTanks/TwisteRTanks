@@ -1,6 +1,6 @@
 const sf = @import("sf");
 const genRandNumInRange = @import("../utils.zig").genRandNumInRange;
-const math = @import("math");
+const math = @import("std").math;
 
 pub const Button = struct {
 
@@ -13,8 +13,9 @@ pub const Button = struct {
     textColor: sf.Color = sf.Color.White,
     text: sf.Text,
     body: sf.RectangleShape,
+    supplier: *sf.RenderWindow,
 
-    pub fn create(pos: [2]f32, tlabel: [:0]const u8) !Self {
+    pub fn create(pos: [2]f32, tlabel: [:0]const u8, supplier: *sf.RenderWindow) !Self {
         var text = try sf.Text.createWithText(
                 tlabel, 
                 try sf.Font.createFromFile(
@@ -35,17 +36,18 @@ pub const Button = struct {
         
 
         return Self {
-            .id = genRandNumInRange(math.minInt(i32), math.maxInt(i32)),
+            .id = 0, //genRandNumInRange(math.minInt(i32), math.maxInt(i32)),
             .isPressed = false,
             .position = sf.Vector2f.new(pos[0], pos[1]),
             .text = text,
-            .body = body
+            .body = body,
+            .supplier = supplier
         };
     }
 
-    pub fn update(self: *Self, window: sf.RenderWindow) void {
+    pub fn update(self: *Self) void {
 
-        var pos: sf.Vector2i = sf.window.mouse.getPosition(window);
+        var pos: sf.Vector2i = sf.window.mouse.getPosition(self.supplier.*);
         var fposx: f32 = @intToFloat(f32, pos.x);
         var fposy: f32 = @intToFloat(f32, pos.y);
         var fpos: sf.Vector2f = sf.Vector2f.new(fposx, fposy);
@@ -58,8 +60,12 @@ pub const Button = struct {
     }
 
     pub fn drawOnWindow(self: Self, window: *sf.RenderWindow) void {
+        //var window: *sf.RenderWindow = self.supplier;
         window.draw(self.body, null);
         window.draw(self.text, null);
     }
 
+    pub fn isClicled() bool {
+        return true;
+    }
 };

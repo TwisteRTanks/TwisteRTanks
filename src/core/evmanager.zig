@@ -22,6 +22,7 @@ pub fn create(supplier: sf.RenderWindow, game: *Game) Self {
 
 pub fn update(self: *Self) !void {
     while (self.pollEvent()) |event| {
+        
         var callbackPtrAddres: ?usize = self.callbacksMap.get(try event.toStr());
 
         if (callbackPtrAddres == null) { continue; }
