@@ -14,4 +14,10 @@ pub const EventWrapper = union(enum) {
         };
     }
 
+    pub fn getEventName(self: EventWrapper) []const u8 {
+        return switch (self) {
+            EventWrapper.sfmlEvent => self.sfmlEvent.getEventName(),
+            EventWrapper.gameEvent => self.gameEvent.getEventName()
+        };
+    }
 };

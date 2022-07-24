@@ -22,5 +22,11 @@ pub const gameEvent = union(enum) {
         };
     }
 
+    pub fn getEventName(self: gameEvent) []const u8 {
+        return switch (self) {
+            gameEvent.buttonPressed => "gameEvent.buttonPressed",
+        };
+    }
+
     buttonPressed: buttonEvent
 };

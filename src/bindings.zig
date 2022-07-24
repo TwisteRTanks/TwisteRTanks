@@ -33,7 +33,7 @@ pub fn onSKeyPressed(game: *Game) anyerror!void {
 }
 
 pub fn onMouseButtonLeftPressed(game: *Game, event: EventWrapper) anyerror!void {
-    for (game.buttons.items) |button| {
+    for (game.buttons.items) |*button| {
         _=button.checkIsClicked(event);
     }
 }

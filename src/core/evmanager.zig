@@ -29,8 +29,13 @@ pub fn update(self: *Self) !void {
     while (try self.pollEvent()) |event| {
         // `source` is the *Game
 
+        const eventName = switch (event) {
+            EventWrapper.sfmlEvent => event.getEventName(),
+            else => event.getEventName()
+        };
+
         var callbackPtrAddres: ?usize = self.callbacksMap.get(try event.toStr());
-        var genericCallbacksPtrAddres: ?std.ArrayList(usize) = self.genericCallbacksMap.get(@typeName(@TypeOf(event)));
+        var genericCallbacksPtrAddres: ?std.ArrayList(usize) = self.genericCallbacksMap.get(eventName);
 
         if (genericCallbacksPtrAddres != null) {
             for (genericCallbacksPtrAddres.?.items) |cbPtrAdress| {
@@ -52,11 +57,16 @@ pub fn registerCallback(self: *Self, callback: fn(*Game) anyerror!void, event: E
 }
 
 pub fn registerGenericCallback(self: *Self, callback: fn(*Game, EventWrapper) anyerror!void, event: EventWrapper) !void {
-    var bindingsArray: ?std.ArrayList(usize) = self.genericCallbacksMap.get(@typeName(@TypeOf(event)));
+    const eventName = switch (event) {
+        EventWrapper.sfmlEvent => event.getEventName(),
+        else => event.getEventName()
+    };
+    std.debug.print("{s}\n", .{eventName});
+    var bindingsArray: ?std.ArrayList(usize) = self.genericCallbacksMap.get(eventName);
     if (bindingsArray == null) {
         var newArrayList = std.ArrayList(usize).init(std.heap.page_allocator);
         try newArrayList.append(@ptrToInt(callback));
-        try self.genericCallbacksMap.put(@typeName(@TypeOf(event)), newArrayList);
+        try self.genericCallbacksMap.put(eventName, newArrayList);
     } else {
         try bindingsArray.?.append(@ptrToInt(callback));
     }

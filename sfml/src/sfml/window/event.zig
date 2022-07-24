@@ -177,6 +177,26 @@ pub const Event = union(Event.Type) {
         };
     }
 
+    pub fn getEventName(self: Self) [:0]const u8 {
+        return switch (self){
+            Event.closed => "Event.closed",
+            Event.resized => "Event.resized",
+            Event.lostFocus=> "Event.lostFocus",
+            Event.gainedFocus => "Event.gainedFocus",
+            Event.textEntered => "Event.textEntered",
+            Event.keyPressed => "Event.keyPressed",
+            Event.keyReleased => "Event.keyReleased",
+            Event.mouseButtonPressed => "Event.mouseButtonPressed",
+            Event.mouseButtonReleased => "Event.mouseButtonReleased",
+            Event.mouseMoved => "Event.mouseMoved",
+            Event.mouseEntered => "Event.mouseEntered",
+            Event.mouseLeft => "Event.mouseLeft",
+            Event.mouseWheelScrolled => "Event.mouseWheelScrolled",
+        };
+    }
+
+    
+
     // An event is one of those
     closed: void,
     resized: SizeEvent,

@@ -3,6 +3,7 @@ const genRandNumInRange = @import("../utils.zig").genRandNumInRange;
 const math = @import("std").math;
 const EventWrapper = @import("../core/eventWrapper.zig").EventWrapper;
 const EventManager = @import("../core/evmanager.zig");
+const std = @import("std");
 
 pub const Button = struct {
 
@@ -70,8 +71,9 @@ pub const Button = struct {
     }
 
     // This function doing anything
-    pub fn checkIsClicked(self: Self, event: EventWrapper) bool {
-        _=self; _=event;
+    pub fn checkIsClicked(self: *Self, event: EventWrapper) bool {
+        _=event;
+        self.body.setFillColor(sf.Color.fromRGB(0, 255, 0));
         //std.debug.print("{s}", .{event});
         return true;
     }
