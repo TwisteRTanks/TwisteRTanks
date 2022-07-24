@@ -4,8 +4,7 @@ const EventWrapper = @import("core/eventWrapper.zig").EventWrapper;
 // Generic signature: fn(*Game, EventWrapper) anyerror!void 
 // fn(*Game) anyerror!void for KeyboardManager 
 
-pub fn onCloseWindow(game: *Game, event: EventWrapper) anyerror!void {
-    _=event;
+pub fn onCloseWindow(game: *Game) anyerror!void {
     game.window.close();
 }
 
@@ -34,7 +33,7 @@ pub fn onSKeyPressed(game: *Game) anyerror!void {
 }
 
 pub fn onMouseButtonLeftPressed(game: *Game, event: EventWrapper) anyerror!void {
-    for (game.buttons) |button| {
-        button.checkIsClicked(event);
+    for (game.buttons.items) |button| {
+        _=button.checkIsClicked(event);
     }
 }

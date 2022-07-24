@@ -70,7 +70,7 @@ pub const Button = struct {
     }
 
     // This function doing anything
-    pub fn checkIsClicked(self: Self, event: EventWrapper) void {
+    pub fn checkIsClicked(self: Self, event: EventWrapper) bool {
         _=self; _=event;
         //std.debug.print("{s}", .{event});
         return true;

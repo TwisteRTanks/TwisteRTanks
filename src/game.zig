@@ -49,10 +49,12 @@ pub fn setup(self: *Game) !void {
         EventWrapper{ .sfmlEvent = sf.Event.closed }
     );
 
-    //try self.cEventManager.?.registerCallback(
-    //    bindings.onMouseButtonLeftPressed, 
-    //    EventWrapper{ .sfmlEvent = sf.Event{ .mouseMoved = sf.Event.MouseButtonEvent} }
-    //);
+    var ev_: sf.Event.MouseButtonEvent = undefined;
+
+    try self.cEventManager.?.registerGenericCallback(
+        bindings.onMouseButtonLeftPressed, 
+        EventWrapper{ .sfmlEvent = sf.Event{ .mouseButtonPressed = ev_} }
+    );
     
 
     // Creating and setuping keyboard manager //
