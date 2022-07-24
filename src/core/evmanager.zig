@@ -61,7 +61,6 @@ pub fn registerGenericCallback(self: *Self, callback: fn(*Game, EventWrapper) an
         EventWrapper.sfmlEvent => event.getEventName(),
         else => event.getEventName()
     };
-    std.debug.print("{s}\n", .{eventName});
     var bindingsArray: ?std.ArrayList(usize) = self.genericCallbacksMap.get(eventName);
     if (bindingsArray == null) {
         var newArrayList = std.ArrayList(usize).init(std.heap.page_allocator);
