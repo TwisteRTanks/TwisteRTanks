@@ -177,7 +177,7 @@ pub const Event = union(Event.Type) {
         };
     }
 
-    pub fn getEventName(self: Self) [:0]const u8 {
+    pub fn getEventName(self: Self) []const u8 {
         return switch (self){
             Event.closed => "Event.closed",
             Event.resized => "Event.resized",
