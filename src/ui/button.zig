@@ -10,7 +10,6 @@ pub const Button = struct {
     const Self = @This();
 
     id: i64,
-    isPressed: bool,
     position: sf.Vector2f,
     bgColor: sf.Color = sf.Color.Black,
     textColor: sf.Color = sf.Color.White,
@@ -18,6 +17,8 @@ pub const Button = struct {
     body: sf.RectangleShape,
     supplier: *sf.RenderWindow,
     eventManager: EventManager,
+    isPressed: bool,
+    clock: sf.Clock,
 
     pub fn create(pos: [2]f32, tlabel: [:0]const u8, supplier: *sf.RenderWindow, evmanager: EventManager) !Self {
         var text = try sf.Text.createWithText(
@@ -47,19 +48,13 @@ pub const Button = struct {
             .body = body,
             .supplier = supplier,
             .eventManager = evmanager,
+            .clock = try sf.Clock.create(),
         };
     }
 
     pub fn update(self: *Self) void {
-
-        var pos: sf.Vector2i = sf.window.mouse.getPosition(self.supplier.*);
-        var fposx: f32 = @intToFloat(f32, pos.x);
-        var fposy: f32 = @intToFloat(f32, pos.y);
-        var fpos: sf.Vector2f = sf.Vector2f.new(fposx, fposy);
-
-        if (self.body.getGlobalBounds().contains(fpos)) {
-            self.body.setFillColor(sf.Color.Black);
-        } else {
+        if (self.clock.getElapsedTime().asSeconds() > 0.1) {
+            self.isPressed = false;
             self.body.setFillColor(sf.Color.fromRGB(30, 30, 30));
         }
     }
@@ -72,10 +67,22 @@ pub const Button = struct {
 
     // This function doing anything
     pub fn checkIsClicked(self: *Self, event: EventWrapper) bool {
-        _=event;
-        self.body.setFillColor(sf.Color.fromRGB(0, 255, 0));
-        //std.debug.print("{s}", .{event});
-        return true;
+
+        var pos: sf.Vector2i = event.sfmlEvent.mouseButtonPressed.pos;
+        var fposx: f32 = @intToFloat(f32, pos.x);
+        var fposy: f32 = @intToFloat(f32, pos.y);
+        var fpos: sf.Vector2f = sf.Vector2f.new(fposx, fposy);
+
+        if (self.body.getGlobalBounds().contains(fpos)) {
+            self.body.setFillColor(sf.Color.fromRGB(0, 255, 0));
+            self.isPressed = true;
+            _=self.clock.restart();
+            return true;
+            //self.evmanager.putGameEvent
+        }
+        std.debug.print("{s} {s}\n\n", .{event, fpos});
+        
+        return false;
     }
 
 };
