@@ -34,7 +34,7 @@ pub fn update(self: *Self) !void {
 
         if (genericCallbacksPtrAddres != null) {
             for (genericCallbacksPtrAddres.?.items) |cbPtrAdress| {
-                const binding: fn(*Game, EventWrapper) anyerror!void = @intToPtr(*fn(*Game, EventWrapper) anyerror!void, cbPtrAdress).*;
+                const binding: fn(*Game, EventWrapper) anyerror!void = @intToPtr(fn(*Game, EventWrapper) anyerror!void, cbPtrAdress);
                 try binding(self.source, event);
             }
         }
