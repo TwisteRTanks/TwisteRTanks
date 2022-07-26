@@ -73,17 +73,19 @@ pub fn runMainLoop(self: *Game) !void {
     try self.buttons.append(b);
 
     while (self.window.isOpen()) {
+        std.debug.print("[mainloop] isPressed address: {s}\n", .{&b.isPressed});
+
         b.update();
         try self.cEventManager.?.update();
         try self.cKeyboardManager.?.update();
-
+        
+        
         self.window.clear(sf.Color.Black);
         self.map.drawOnWindow(&self.window);
         self.master.drawOnWindow(&self.window);
-
         b.drawOnWindow(&self.window);
-        
         self.window.display();
+
     }
 }
 
