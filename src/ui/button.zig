@@ -53,14 +53,13 @@ pub const Button = struct {
     }
 
     pub fn update(self: *Self) void {
-        if (self.clock.getElapsedTime().asSeconds() > 0.1) {
+        if ((self.isPressed == true ) and (self.clock.getElapsedTime().asSeconds() > 0.1)) {
             self.isPressed = false;
             self.body.setFillColor(sf.Color.fromRGB(30, 30, 30));
         }
     }
 
     pub fn drawOnWindow(self: Self, window: *sf.RenderWindow) void {
-        //var window: *sf.RenderWindow = self.supplier;
         window.draw(self.body, null);
         window.draw(self.text, null);
     }
@@ -72,16 +71,14 @@ pub const Button = struct {
         var fposx: f32 = @intToFloat(f32, pos.x);
         var fposy: f32 = @intToFloat(f32, pos.y);
         var fpos: sf.Vector2f = sf.Vector2f.new(fposx, fposy);
-
+        
         if (self.body.getGlobalBounds().contains(fpos)) {
-            self.body.setFillColor(sf.Color.fromRGB(0, 255, 0));
             self.isPressed = true;
-            _=self.clock.restart();
+            self.body.setFillColor(sf.Color.fromRGB(0, 255, 0));
+            _=self.clock.restart();            
             return true;
             //self.evmanager.putGameEvent
-        }
-        std.debug.print("{s} {s}\n\n", .{event, fpos});
-        
+        }        
         return false;
     }
 
