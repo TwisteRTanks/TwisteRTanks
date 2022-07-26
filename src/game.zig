@@ -32,7 +32,8 @@ pub fn createGame() !Game {
         .gameMenu = gameMenu, 
         .cEventManager = eventManager, 
         .cKeyboardManager = keyboardManager,
-        .buttons = std.ArrayList(Button).init(std.heap.page_allocator),
+        //.buttons = std.ArrayList(Button).init(std.heap.page_allocator),
+        .buttons = try std.ArrayList(Button).initCapacity(std.heap.page_allocator, 50),
     };
 }
 
@@ -66,24 +67,25 @@ pub fn setup(self: *Game) !void {
     try self.cKeyboardManager.?.addReactOnKey(bindings.onDownKeyPressed, KeyCode.Down);
     try self.cKeyboardManager.?.addReactOnKey(bindings.onWKeyPressed, KeyCode.W);
     try self.cKeyboardManager.?.addReactOnKey(bindings.onSKeyPressed, KeyCode.S);
+
+    var clsButton = try Button.create(.{100, 100}, "Close", &self.window, self.cEventManager.?);
+    try self.buttons.append(clsButton);
 }
 
 pub fn runMainLoop(self: *Game) !void {
-    var b = try Button.create(.{100, 100}, "Test", &self.window, self.cEventManager.?);
-    try self.buttons.append(b);
 
     while (self.window.isOpen()) {
-        std.debug.print("[mainloop] isPressed address: {s}\n", .{&b.isPressed});
-
-        b.update();
         try self.cEventManager.?.update();
-        try self.cKeyboardManager.?.update();
-        
-        
+        try self.cKeyboardManager.?.update();        
         self.window.clear(sf.Color.Black);
         self.map.drawOnWindow(&self.window);
         self.master.drawOnWindow(&self.window);
-        b.drawOnWindow(&self.window);
+
+        for (self.buttons.items) |*button| {
+            button.update();
+            button.drawOnWindow(&self.window);
+        }
+        
         self.window.display();
 
     }
