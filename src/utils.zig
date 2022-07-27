@@ -31,7 +31,6 @@ pub fn removeValFromArrayU8(array: []u8, value: u8) ![]u8 {
 
     const newArrayLen: u64 = array.len - countOfRemovingValues;
     const newArray = try allocator.alloc(u8, newArrayLen);
-    std.debug.print("array: {}", .{newArray[0..newArrayLen].*});
     return newArray;
 
 }
