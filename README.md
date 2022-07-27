@@ -7,3 +7,6 @@ TODO-LIST:
 
 * Write recource manager
 * Write renderer manager
+
+Resource manager:
+* Must contain resources which stored in memory long time (buttons, menus, others)

@@ -33,7 +33,7 @@ pub fn createGame() !Game {
         .cEventManager = eventManager, 
         .cKeyboardManager = keyboardManager,
         //.buttons = std.ArrayList(Button).init(std.heap.page_allocator),
-        .buttons = try std.ArrayList(Button).initCapacity(std.heap.page_allocator, 50),
+        .buttons = try std.ArrayList(*Button).initCapacity(std.heap.page_allocator, 50),
     };
 }
 
@@ -69,7 +69,7 @@ pub fn setup(self: *Game) !void {
     try self.cKeyboardManager.?.addReactOnKey(bindings.onSKeyPressed, KeyCode.S);
     
     var clsButton = try Button.create(.{100, 100}, "Close", &self.window, &self.cEventManager.?);
-    try self.buttons.append(clsButton);
+    try self.buttons.appendAssumeCapacity(&clsButton);
 
     try self.cEventManager.?.registerCallback(
         bindings.onCloseButtonPressed, 
@@ -88,7 +88,7 @@ pub fn runMainLoop(self: *Game) !void {
         self.map.drawOnWindow(&self.window);
         self.master.drawOnWindow(&self.window);
 
-        for (self.buttons.items) |*button| {
+        for (self.buttons.items) |button| {
             button.update();
             button.drawOnWindow(&self.window);
         }
@@ -106,7 +106,7 @@ map: Map,
 cEventManager: ?EventManager,
 cKeyboardManager: ?KeyboardManager,
 // Gui elements:
-buttons: std.ArrayList(Button),
+buttons: std.ArrayList(*Button),
 gameMenu: Menu,
 //labels: ...
 //inputFiels: ...
