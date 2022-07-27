@@ -69,7 +69,7 @@ pub fn setup(self: *Game) !void {
     try self.cKeyboardManager.?.addReactOnKey(bindings.onSKeyPressed, KeyCode.S);
     
     var clsButton = try Button.create(.{100, 100}, "Close", &self.window, &self.cEventManager.?);
-    try self.buttons.append(clsButton);
+    self.buttons.appendAssumeCapacity(clsButton);
 
     try self.cEventManager.?.registerCallback(
         bindings.onCloseButtonPressed, 
