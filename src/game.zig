@@ -14,7 +14,7 @@ const Button = @import("ui/button.zig").Button;
 const Menu = @import("ui/menu.zig");
 const EventManager = @import("core/evmanager.zig");
 const KeyboardManager = @import("core/kbmanager.zig");
-const GameEvent = @import("core/gameEvent.zig").gameEvent;
+const gameEvent = @import("core/gameEvent.zig").gameEvent;
 const bindings = @import("bindings.zig");
 
 pub fn createGame() !Game {
@@ -67,9 +67,16 @@ pub fn setup(self: *Game) !void {
     try self.cKeyboardManager.?.addReactOnKey(bindings.onDownKeyPressed, KeyCode.Down);
     try self.cKeyboardManager.?.addReactOnKey(bindings.onWKeyPressed, KeyCode.W);
     try self.cKeyboardManager.?.addReactOnKey(bindings.onSKeyPressed, KeyCode.S);
-
-    var clsButton = try Button.create(.{100, 100}, "Close", &self.window, self.cEventManager.?);
+    
+    var clsButton = try Button.create(.{100, 100}, "Close", &self.window, &self.cEventManager.?);
     try self.buttons.append(clsButton);
+
+    try self.cEventManager.?.registerCallback(
+        bindings.onCloseButtonPressed, 
+        EventWrapper{ 
+            .gameEvent = gameEvent{.buttonPressed = .{.id = clsButton.id}}
+        }
+    );
 }
 
 pub fn runMainLoop(self: *Game) !void {
