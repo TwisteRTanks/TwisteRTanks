@@ -17,11 +17,11 @@ pub const Button = struct {
     text: sf.Text,
     body: sf.RectangleShape,
     supplier: *sf.RenderWindow,
-    eventManager: EventManager,
+    eventManager: *EventManager,
     clock: sf.Clock,
     isPressed: bool,
 
-    pub fn create(pos: [2]f32, tlabel: [:0]const u8, supplier: *sf.RenderWindow, evmanager: EventManager) !Self {
+    pub fn create(pos: [2]f32, tlabel: [:0]const u8, supplier: *sf.RenderWindow, evmanager: *EventManager) !Self {
         var text = try sf.Text.createWithText(
                 tlabel, 
                 try sf.Font.createFromFile(
