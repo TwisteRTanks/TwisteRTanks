@@ -28,7 +28,6 @@ pub fn create(supplier: sf.RenderWindow, game: *Game) Self {
 pub fn update(self: *Self) !void {
     while (try self.pollEvent()) |event| {
         // `source` is the *Game
-
         const eventName = switch (event) {
             EventWrapper.sfmlEvent => event.getEventName(),
             else => event.getEventName()
@@ -80,12 +79,11 @@ pub fn pollEvent(self: *Self) !?EventWrapper {
     
     if (event == null) {
         var event_: ?GameEvent = self.gameEventsBuffer.popOrNull();
-        
         if (event_ == null) {
             return null;
         } else
-        
         {
+            
             try self.allEventsBuffer.append(EventWrapper{.gameEvent=event_.?});
             return EventWrapper{.gameEvent=event_.?};
         }
