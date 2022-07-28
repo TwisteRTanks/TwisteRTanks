@@ -41,3 +41,7 @@ pub fn onMouseButtonLeftPressed(game: *Game, event: EventWrapper) anyerror!void 
 pub fn onCloseButtonPressed(game: *Game) anyerror!void {
     game.window.close();
 }
+
+pub fn onHelpButtonPressed(game: *Game) anyerror!void {
+    _=game;
+}

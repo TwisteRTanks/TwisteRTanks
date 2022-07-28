@@ -70,7 +70,7 @@ pub fn setup(self: *Game) !void {
     
     // Creating the button instance
     var clsButton = try Button.create(.{100, 100}, "Close", &self.window, &self.cEventManager.?);
-    
+    var helpButton = try Button.create(.{100, 200}, "Help", &self.window, &self.cEventManager.?);
     // Q: Why do we put the button in heap?
     // A: this way she will keep her lifetime until we manually free her memory
     // A: Ok, but we could just take &clsButton
@@ -85,10 +85,21 @@ pub fn setup(self: *Game) !void {
     clsButtonPtr.* = clsButton;
     try self.buttons.append(clsButtonPtr);
     
+    const helpButtonPtr = try std.heap.page_allocator.create(Button);
+    helpButtonPtr.* = helpButton;
+    try self.buttons.append(helpButtonPtr);
+
     try self.cEventManager.?.registerCallback(
         bindings.onCloseButtonPressed, 
         EventWrapper{ 
             .gameEvent = gameEvent{.buttonPressed = .{.id = clsButton.id}}
+        }
+    );
+
+    try self.cEventManager.?.registerCallback(
+        bindings.onHelpButtonPressed, 
+        EventWrapper{ 
+            .gameEvent = gameEvent{.buttonPressed = .{.id = helpButton.id}}
         }
     );
 }
