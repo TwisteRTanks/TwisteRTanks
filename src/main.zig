@@ -6,6 +6,7 @@ pub fn main() !void {
     var game = try Game.createGame();
     try game.setup();
     try game.runMainLoop();
+    try game.destroyGame();
 
 }
 

@@ -93,6 +93,13 @@ pub fn pollEvent(self: *Self) !?EventWrapper {
     }
 }
 
+pub fn destroy(self: *Self) void {
+    self.callbacksMap.deinit();
+    self.genericCallbacksMap.deinit();
+    self.gameEventsBuffer.deinit();
+    self.allEventsBuffer.deinit();
+}
+
 callbacksMap: std.AutoHashMap([250]u8, usize),
 // {"mouseButtonPressed": [binding1, binding2, ...]}
 // second argument (usize) is addres of *fn(*Game, EventWrapper) anyerror!void

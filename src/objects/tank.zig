@@ -6,6 +6,8 @@ const math = @import("std").math;
 pub fn destroy(self: *Self) void {
     self.sprite.destroy();
     self.texture.destroy();
+    self.turretSprite.destroy();
+    self.turretTexture.destroy();
 }
 
 pub fn drawOnWindow(self: *Self, window: *sf.RenderWindow) void {

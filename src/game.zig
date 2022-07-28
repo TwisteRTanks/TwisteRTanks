@@ -33,7 +33,7 @@ pub fn createGame() !Game {
         .cEventManager = eventManager, 
         .cKeyboardManager = keyboardManager,
         //.buttons = std.ArrayList(Button).init(std.heap.page_allocator),
-        .buttons = try std.ArrayList(Button).initCapacity(std.heap.page_allocator, 50),
+        .buttons = try std.ArrayList(*Button).initCapacity(std.heap.page_allocator, 50),
     };
 }
 
@@ -68,9 +68,23 @@ pub fn setup(self: *Game) !void {
     try self.cKeyboardManager.?.addReactOnKey(bindings.onWKeyPressed, KeyCode.W);
     try self.cKeyboardManager.?.addReactOnKey(bindings.onSKeyPressed, KeyCode.S);
     
+    // Creating the button instance
     var clsButton = try Button.create(.{100, 100}, "Close", &self.window, &self.cEventManager.?);
-    self.buttons.appendAssumeCapacity(clsButton);
-
+    
+    // Q: Why do we put the button in heap?
+    // A: this way she will keep her lifetime until we manually free her memory
+    // A: Ok, but we could just take &clsButton
+    // Q: Yes, but the pointer to clsButton would be destroyed with the stack frame of the function
+    // Q: And this would lead to segmentation faults
+    // A: But we could just put the Button in the ArrayList (self.buttons)?
+    // Q: But it's not productive,
+    // Q: because when new elements are added to the ArrayList, 
+    // Q: it allocates new memory, and **copies** all its elements to the allocated memory
+    // Q: Which is more profitable: copying a pointer or an instance of a Button?
+    const clsButtonPtr = try std.heap.page_allocator.create(Button);
+    clsButtonPtr.* = clsButton;
+    try self.buttons.append(clsButtonPtr);
+    
     try self.cEventManager.?.registerCallback(
         bindings.onCloseButtonPressed, 
         EventWrapper{ 
@@ -87,10 +101,11 @@ pub fn runMainLoop(self: *Game) !void {
         self.window.clear(sf.Color.Black);
         self.map.drawOnWindow(&self.window);
         self.master.drawOnWindow(&self.window);
-
-        for (self.buttons.items) |*button| {
-            button.update();
-            button.drawOnWindow(&self.window);
+        
+        // button and so the pointer, so it is mutable (don't do that: *button)
+        for (self.buttons.items) |buttonPtr| {
+            buttonPtr.update();
+            buttonPtr.drawOnWindow(&self.window);
         }
         
         self.window.display();
@@ -98,7 +113,18 @@ pub fn runMainLoop(self: *Game) !void {
     }
 }
 
-pub fn destroyGame() !void {}
+pub fn destroyGame(self: *Game) !void {
+    // freeing up memory
+    self.window.destroy();  
+    self.cEventManager.?.destroy();
+    self.cKeyboardManager.?.destroy();
+
+    for (self.buttons.items) |buttonPtr| {
+        std.heap.page_allocator.destroy(buttonPtr);
+    }
+    self.buttons.deinit();
+    self.master.destroy();
+}
 
 window: sf.RenderWindow,
 master: Tank,
@@ -106,7 +132,7 @@ map: Map,
 cEventManager: ?EventManager,
 cKeyboardManager: ?KeyboardManager,
 // Gui elements:
-buttons: std.ArrayList(Button),
+buttons: std.ArrayList(*Button),
 gameMenu: Menu,
 //labels: ...
 //inputFiels: ...

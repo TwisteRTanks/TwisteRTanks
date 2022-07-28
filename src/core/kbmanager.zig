@@ -35,5 +35,9 @@ pub fn update(self: *Self) !void {
     }
 }
 
+pub fn destroy(self: *Self) void {
+    self.keyMap.deinit();
+}
+
 keyMap: std.AutoHashMap(sf.window.keyboard.KeyCode, usize),
 source: *Game
