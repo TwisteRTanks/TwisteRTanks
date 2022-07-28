@@ -84,7 +84,7 @@ pub fn setup(self: *Game) !void {
     const clsButtonPtr = try std.heap.page_allocator.create(Button);
     clsButtonPtr.* = clsButton;
     try self.buttons.append(clsButtonPtr);
-
+    
     try self.cEventManager.?.registerCallback(
         bindings.onCloseButtonPressed, 
         EventWrapper{ 
