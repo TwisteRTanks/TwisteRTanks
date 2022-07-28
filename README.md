@@ -7,6 +7,57 @@ TODO-LIST:
 
 * Write recource manager
 * Write renderer manager
-
+* Write UID manager
+* Write config parser for gui configs
 Resource manager:
 * Must contain resources which stored in memory long time (buttons, menus, others)
+
+Gui config file example:
+```json5
+{
+    "Root-Elements": {
+        "Root-Menu": {
+            "rstates": ["inMainMenu"],
+            "labels": [
+                {
+                    "title": "base",
+                    "posx": 0,
+                    "posy": 0,
+                    "color": "0xCOFFEE",
+                    "pxsize:": 15
+                },
+            ],
+
+            "buttons": [],
+        },
+
+        "Buttons": [
+            // does not have `rstates` field
+            {
+                "rstates": ["inMainMenu", "Playing", "Paused"],
+                "title": "Close",
+                "posx": 0,
+                "posy": 0,
+                "color": "0x00FF00",
+                "pxsize": 15
+            },
+        ],
+
+        "inputFields": [
+            {
+                "text": "enter your nick", 
+                "rstates": ["inMainMenu", "Playing", "Paused"],
+                "showText": true,
+                "posx": 0,
+                "posy": 0,
+                "pxsize": 15,
+            }
+        ],
+
+        "PauseMenu:": {}
+    }
+}
+```
+
+Game states: Playing, Paused, inMainMenu
+Menu states: inChoosingTank, inSettings
