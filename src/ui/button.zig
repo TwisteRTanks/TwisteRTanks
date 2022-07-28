@@ -56,7 +56,7 @@ pub const Button = struct {
     pub fn update(self: *Self) void {
         if ((self.isPressed == true ) and (self.clock.getElapsedTime().asSeconds() > 0.3)) {
             self.isPressed = false;
-            self.body.setFillColor(sf.Color.fromRGB(30, 30, 30));
+            self.body.setFillColor(sf.Color.fromRGB(0, 0, 0));
         }
     }
 
