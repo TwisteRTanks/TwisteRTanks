@@ -16,16 +16,19 @@ const EventManager = @import("core/evmanager.zig");
 const KeyboardManager = @import("core/kbmanager.zig");
 const gameEvent = @import("core/gameEvent.zig").gameEvent;
 const bindings = @import("bindings.zig");
+const UIDManager = @import("uidmanager.zig");
+const Scene = @import("ui/scene.zig");
 
 pub fn createGame() !Game {
     var window = try utils.create_window(1000, 700, "TwisteRTanks");
     var map = Map.create();
     var master = try Tank.create();
-    var gameMenu = try Menu.create();
+    var gameMenu = try Menu.create("Main Menu", sf.Vector2f.new(0,0));
     var eventManager: ?EventManager = null;
     var keyboardManager: ?KeyboardManager = null;
 
     return Game { 
+        .uidmanager = UIDManager.create(),
         .window = window, 
         .map = map, 
         .master = master, 
@@ -38,6 +41,8 @@ pub fn createGame() !Game {
 }
 
 pub fn setup(self: *Game) !void {
+    var scene = try Scene.create();
+    _=scene;
     self.window.setFramerateLimit(60);
 
     try self.map.genMap();
@@ -69,8 +74,8 @@ pub fn setup(self: *Game) !void {
     try self.cKeyboardManager.?.addReactOnKey(bindings.onSKeyPressed, KeyCode.S);
     
     // Creating the button instance
-    var clsButton = try Button.create(.{100, 100}, "Close", &self.window, &self.cEventManager.?);
-    var helpButton = try Button.create(.{100, 200}, "Help", &self.window, &self.cEventManager.?);
+    var clsButton = try Button.create(.{20, 0}, "Close", &self.window, &self.cEventManager.?, &self.uidmanager);
+    var helpButton = try Button.create(.{20, 70}, "Help", &self.window, &self.cEventManager.?, &self.uidmanager);
     // Q: Why do we put the button in heap?
     // A: this way she will keep her lifetime until we manually free her memory
     // A: Ok, but we could just take &clsButton
@@ -133,10 +138,11 @@ pub fn destroyGame(self: *Game) !void {
     for (self.buttons.items) |buttonPtr| {
         std.heap.page_allocator.destroy(buttonPtr);
     }
+
     self.buttons.deinit();
     self.master.destroy();
 }
-
+uidmanager: UIDManager,
 window: sf.RenderWindow,
 master: Tank,
 map: Map,

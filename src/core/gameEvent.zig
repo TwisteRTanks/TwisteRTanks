@@ -7,7 +7,7 @@ pub const gameEvent = union(enum) {
         const Self = @This();
         const structId: i128 = -1;
 
-        id: i64,
+        id: u64,
 
         pub fn toStr(self: Self) ![250]u8 {
             var buf: [250]u8 = undefined;

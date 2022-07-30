@@ -4,13 +4,14 @@ const math = @import("std").math;
 const EventWrapper = @import("../core/eventWrapper.zig").EventWrapper;
 const gameEvent = @import("../core/gameEvent.zig").gameEvent;
 const EventManager = @import("../core/evmanager.zig");
+const UIDManager = @import("../uidmanager.zig");
 const std = @import("std");
 
 pub const Button = struct {
 
     const Self = @This();
 
-    id: i64,
+    id: u64,
     position: sf.Vector2f,
     bgColor: sf.Color = sf.Color.Black,
     textColor: sf.Color = sf.Color.White,
@@ -21,7 +22,13 @@ pub const Button = struct {
     clock: sf.Clock,
     isPressed: bool,
 
-    pub fn create(pos: [2]f32, tlabel: [:0]const u8, supplier: *sf.RenderWindow, evmanager: *EventManager) !Self {
+    pub fn destroy(self: *Self) void {
+        self.text.destroy();
+        self.body.destroy();
+        self.clock.destroy();
+    }
+
+    pub fn create(pos: [2]f32, tlabel: [:0]const u8, supplier: *sf.RenderWindow, evmanager: *EventManager, uidm: *UIDManager) !Self {
         var text = try sf.Text.createWithText(
                 tlabel, 
                 try sf.Font.createFromFile(
@@ -42,7 +49,7 @@ pub const Button = struct {
         
 
         return Self {
-            .id = try genRandNumInRange(math.minInt(i32), math.maxInt(i32)),
+            .id = uidm.getUID(),
             .isPressed = false,
             .position = sf.Vector2f.new(pos[0], pos[1]),
             .text = text,
@@ -58,6 +65,11 @@ pub const Button = struct {
             self.isPressed = false;
             self.body.setFillColor(sf.Color.fromRGB(0, 0, 0));
         }
+    }
+
+    pub fn setPosition(self: *Self, pos: [2]f32) void {
+        self.text.setPosition(sf.Vector2f.new(pos[0]+20, pos[1]+10));
+        self.body.setPosition(sf.Vector2f.new(self.text.getGlobalBounds().left, self.text.getGlobalBounds().top));
     }
 
     pub fn drawOnWindow(self: Self, window: *sf.RenderWindow) void {

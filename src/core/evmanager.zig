@@ -28,6 +28,9 @@ pub fn create(supplier: sf.RenderWindow, game: *Game) Self {
 pub fn update(self: *Self) !void {
     while (try self.pollEvent()) |event| {
         // `source` is the *Game
+        if (std.mem.eql(u8, event.getEventName(), "gameEvent.buttonPressed")){
+            std.debug.print("{s}\n", .{event});
+        }
         const eventName = switch (event) {
             EventWrapper.sfmlEvent => event.getEventName(),
             else => event.getEventName()

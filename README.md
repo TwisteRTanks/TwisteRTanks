@@ -54,7 +54,14 @@ Gui config file example:
             }
         ],
 
-        "PauseMenu:": {}
+        "PauseMenu:": {},
+        "canvases": {
+            "transparency": 100,
+            "posx": 0,
+            "posy": 0,
+            "w": 100,
+            "h": 100
+        }
     }
 }
 ```
