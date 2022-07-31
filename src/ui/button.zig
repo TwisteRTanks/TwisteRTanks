@@ -6,6 +6,7 @@ const gameEvent = @import("../core/gameEvent.zig").gameEvent;
 const EventManager = @import("../core/evmanager.zig");
 const UIDManager = @import("../uidmanager.zig");
 const std = @import("std");
+const Game = @import("../game.zig");
 
 pub const Button = struct {
 
@@ -29,13 +30,15 @@ pub const Button = struct {
     }
     ///
     pub fn create(
+        game: *Game,
         pos: [2]f32, 
         tlabel: [:0]const u8, 
-        supplier: *sf.RenderWindow, 
-        evmanager: *EventManager, 
-        uidm: *UIDManager,
         bodysize: ?sf.Vector2f
     ) !Self {
+
+        const supplier:  *sf.RenderWindow = &game.window;
+        const evmanager: *EventManager    = &game.cEventManager.?;
+        const uidm:      *UIDManager      = &game.uidmanager;
 
         const xPos: f32 = pos[0];
         const yPos: f32 = pos[1]; 

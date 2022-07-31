@@ -75,19 +75,15 @@ pub fn setup(self: *Game) !void {
     
     // Creating the button instance
     var clsButton = try Button.create(
+        self,
         .{0, 0}, 
         "Close",
-        &self.window,
-        &self.cEventManager.?,
-        &self.uidmanager,
         sf.Vector2f{.x=400, .y=57}
     );
     var helpButton = try Button.create(
+        self,
         .{0, 300}, 
-        "Help", 
-        &self.window, 
-        &self.cEventManager.?, 
-        &self.uidmanager, 
+        "Help",  
         sf.Vector2f{.x=400, .y=57}
     );
     // Q: Why do we put the button in heap?
