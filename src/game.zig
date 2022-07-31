@@ -74,8 +74,22 @@ pub fn setup(self: *Game) !void {
     try self.cKeyboardManager.?.addReactOnKey(bindings.onSKeyPressed, KeyCode.S);
     
     // Creating the button instance
-    var clsButton = try Button.create(.{20, 0}, "Close", &self.window, &self.cEventManager.?, &self.uidmanager);
-    var helpButton = try Button.create(.{20, 70}, "Help", &self.window, &self.cEventManager.?, &self.uidmanager);
+    var clsButton = try Button.create(
+        .{0, 0}, 
+        "Close",
+        &self.window,
+        &self.cEventManager.?,
+        &self.uidmanager,
+        sf.Vector2f{.x=400, .y=57}
+    );
+    var helpButton = try Button.create(
+        .{0, 300}, 
+        "Help", 
+        &self.window, 
+        &self.cEventManager.?, 
+        &self.uidmanager, 
+        sf.Vector2f{.x=400, .y=57}
+    );
     // Q: Why do we put the button in heap?
     // A: this way she will keep her lifetime until we manually free her memory
     // A: Ok, but we could just take &clsButton

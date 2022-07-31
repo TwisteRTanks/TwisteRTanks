@@ -27,8 +27,19 @@ pub const Button = struct {
         self.body.destroy();
         self.clock.destroy();
     }
+    ///
+    pub fn create(
+        pos: [2]f32, 
+        tlabel: [:0]const u8, 
+        supplier: *sf.RenderWindow, 
+        evmanager: *EventManager, 
+        uidm: *UIDManager,
+        bodysize: ?sf.Vector2f
+    ) !Self {
 
-    pub fn create(pos: [2]f32, tlabel: [:0]const u8, supplier: *sf.RenderWindow, evmanager: *EventManager, uidm: *UIDManager) !Self {
+        const xPos: f32 = pos[0];
+        const yPos: f32 = pos[1]; 
+
         var text = try sf.Text.createWithText(
                 tlabel, 
                 try sf.Font.createFromFile(
@@ -37,16 +48,35 @@ pub const Button = struct {
                 64
         );
 
-        var body = try sf.RectangleShape.create(
-            sf.Vector2f.new(
-                text.getLocalBounds().width+40,
-                text.getLocalBounds().height+20
-            )
-        );
-        text.setPosition(sf.Vector2f.new(pos[0], pos[1]));
+        var body: sf.RectangleShape = undefined; 
+
+        if (bodysize == null) {
+            body = try sf.RectangleShape.create(
+                sf.Vector2f.new(
+                    text.getLocalBounds().width+40,
+                    text.getLocalBounds().height+20
+                )
+            );
+        } else {
+            body = try sf.RectangleShape.create(bodysize.?);
+        }
+
+        const localBodyBounds: sf.FloatRect = body.getLocalBounds();
+        const localTextBounds: sf.FloatRect = text.getLocalBounds();
+
+        const bodyW: f32 = localBodyBounds.width;
+        const textW: f32 = localTextBounds.width;
+
+        const bodyH: f32 = localBodyBounds.height;
+        const textH: f32 = localTextBounds.height;
+
+        const yInaccuracy: f32 = 18.5;
+        const textOffsetX: f32 = (bodyW-textW) / 2.0;
+        const textOffsetY: f32 = ((bodyH-textH) / 2.0) - yInaccuracy;
+
+        body.setPosition(sf.Vector2f.new(xPos, yPos));
+        text.setPosition(sf.Vector2f.new(xPos + textOffsetX, yPos + textOffsetY));
         body.setFillColor(sf.Color.fromRGB(0, 0, 0));
-        body.setPosition(sf.Vector2f.new(text.getGlobalBounds().left-20, text.getGlobalBounds().top-10));
-        
 
         return Self {
             .id = uidm.getUID(),
