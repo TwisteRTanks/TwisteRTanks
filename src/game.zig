@@ -74,8 +74,9 @@ pub fn setup(self: *Game) !void {
     try self.cKeyboardManager.?.addReactOnKey(bindings.onSKeyPressed, KeyCode.S);
     
     // Creating the button instance
+    // first argument is the Game instance
     var clsButton = try Button.create(
-        self,
+        self, 
         .{0, 0}, 
         "Close",
         sf.Vector2f{.x=400, .y=57}
