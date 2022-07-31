@@ -78,7 +78,7 @@ pub const Button = struct {
         const textOffsetY: f32 = ((bodyH-textH) / 2.0) - yInaccuracy;
 
         body.setPosition(sf.Vector2f.new(xPos, yPos));
-        text.setPosition(sf.Vector2f.new(xPos + textOffsetX, yPos + textOffsetY));
+        text.setPosition(sf.Vector2f.new(@round(xPos + textOffsetX), @round(yPos + textOffsetY)));
         body.setFillColor(sf.Color.fromRGB(0, 0, 0));
 
         return Self {
