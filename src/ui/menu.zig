@@ -42,6 +42,7 @@ pub fn destroy(self: *Self) void {
 }
 
 /// The `button` parameter accepts a button with **relative** coordinates
+/// the button will be created with a hard-bound width that the menu has 
 pub fn addButton(self: *Self, label: [:0]const u8) !void {
 
     const topButton: ?*Button = self.buttons.popOrNull();
