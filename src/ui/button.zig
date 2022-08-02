@@ -53,6 +53,7 @@ pub const Button = struct {
 
         var body: sf.RectangleShape = undefined; 
 
+        // Creating Rectangle (without setting the position)
         if (bodysize == null) {
             body = try sf.RectangleShape.create(
                 sf.Vector2f.new(
@@ -78,6 +79,8 @@ pub const Button = struct {
         const textOffsetY: f32 = ((bodyH-textH) / 2.0) - yInaccuracy;
 
         body.setPosition(sf.Vector2f.new(xPos, yPos));
+        // Why need to round the position of text?
+        // See: https://en.sfml-dev.org/forums/index.php?topic=22762.0
         text.setPosition(sf.Vector2f.new(@round(xPos + textOffsetX), @round(yPos + textOffsetY)));
         body.setFillColor(sf.Color.fromRGB(0, 0, 0));
 
@@ -110,7 +113,8 @@ pub const Button = struct {
         window.draw(self.text, null);
     }
 
-    // This function doing anything
+    /// Return state of button: clicked or not
+    /// Return value type: `Allocator.Error!bool`
     pub fn checkIsClicked(self: *Self, event: EventWrapper) !bool {
         var pos: sf.Vector2i = event.sfmlEvent.mouseButtonPressed.pos;
         var fposx: f32 = @intToFloat(f32, pos.x);
